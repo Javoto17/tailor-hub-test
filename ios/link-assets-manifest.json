@@ -1,0 +1,13 @@
+{
+  "migIndex": 1,
+  "data": [
+    {
+      "path": "src/assets/fonts/Roobert-Regular.ttf",
+      "sha1": "a4488fb12c4e2df8efc29eb1befbe14d40e742c7"
+    },
+    {
+      "path": "src/assets/fonts/Roobert-SemiBold.ttf",
+      "sha1": "f069070a70da4d1cbce442609c66beae1ee51599"
+    }
+  ]
+}
