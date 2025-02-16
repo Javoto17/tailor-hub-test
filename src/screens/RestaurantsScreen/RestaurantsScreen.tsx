@@ -1,23 +1,66 @@
-import React, { useState } from 'react';
+import React, { useCallback, useEffect, useRef } from 'react';
 
-import { Text } from 'react-native';
 import { RestaurantsScreenProps } from '@/components/features/navigation/Navigation';
-
+import { RestaurantCardItem } from '@/components/features/restaurants/RestaurantCard';
+import RestaurantsList, {
+  RestaurantsListRef,
+} from '@/components/features/restaurants/RestaurantsList';
 import Layout from '@/components/features/shared/Layout';
-
-import { useGetRestaurants } from '@/hooks/restaurants/useGetRestaurants';
+import { useGetRestaurantsPagination } from '@/hooks/restaurants/useGetRestaurantsPagination';
 
 const RestaurantsScreen: React.FC<RestaurantsScreenProps> = ({
   navigation,
-  route,
 }) => {
-  const [text, setText] = useState<string>();
+  const {
+    data,
+    isFetching: isLoading,
+    hasNextPage,
+    fetchNextPage,
+    isLoadingError,
+  } = useGetRestaurantsPagination();
 
-  const { data } = useGetRestaurants();
+  const refList = useRef<RestaurantsListRef>(null);
+
+  useEffect(() => {
+    navigation.setOptions({
+      title: 'Restaurants',
+    });
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const onPressItem = (id: RestaurantCardItem['id']) => {
+    console.log(id);
+  };
+
+  const onEndReached = useCallback(() => {
+    if (hasNextPage) {
+      fetchNextPage();
+    }
+  }, [hasNextPage, fetchNextPage]);
+
+  const getEmptyText = useCallback(() => {
+    if (isLoadingError) {
+      return 'Error al cargar los restaurantes';
+    }
+
+    if (!data?.length && !isLoading) {
+      return 'No hay restaurantes';
+    }
+
+    return undefined;
+  }, [isLoadingError, data?.length, isLoading]);
 
   return (
     <Layout withHeader>
-      <Text>Restaurants</Text>
+      <RestaurantsList
+        data={(data as RestaurantCardItem[]) ?? []}
+        ref={refList}
+        isLoading={isLoading}
+        onPressItem={onPressItem}
+        onEndReached={data && data?.length > 0 ? onEndReached : undefined}
+        emptyText={getEmptyText()}
+      />
     </Layout>
   );
 };

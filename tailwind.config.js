@@ -30,10 +30,16 @@ module.exports = withTV({
             lineHeight: '28px',
           },
         ],
-        caption: [
+        'body-small': [
           '16px',
           {
             lineHeight: '19.2px',
+          },
+        ],
+        caption: [
+          '14px',
+          {
+            lineHeight: '16.8px',
           },
         ],
       },

@@ -1,5 +1,6 @@
 import React from 'react';
 
+import Header from '@/components/features/shared/Header';
 import { useAuth } from '@/hooks/auth/useAuth';
 import HomeScreen from '@/screens/HomeScreen/HomeScreen';
 import LoginScreen from '@/screens/LoginScreen/LoginScreen';
@@ -71,8 +72,14 @@ export const Navigation = () => {
           />
         </Stack.Navigator>
       ) : (
-        <AuthStack.Navigator>
-          <AuthStack.Screen name="Restaurants" component={RestaurantsScreen} />
+        <AuthStack.Navigator initialRouteName="Restaurants">
+          <AuthStack.Screen
+            name="Restaurants"
+            component={RestaurantsScreen}
+            options={{
+              header: (props) => <Header {...props} />,
+            }}
+          />
         </AuthStack.Navigator>
       )}
     </NavigationContainer>

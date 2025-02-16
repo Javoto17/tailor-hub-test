@@ -1,23 +1,23 @@
 import React, { forwardRef } from 'react';
-import { FlatList } from 'react-native';
+import { FlatList, Text, View } from 'react-native';
 
-import MovieCard, { MovieCardItem } from './RestaurantCard';
 import Spinner from '../shared/Spinner';
+import RestaurantCard, { RestaurantCardItem } from './RestaurantCard';
 
-type MovieListProps = {
-  data: MovieCardItem[];
+type RestaurantsListProps = {
+  data: RestaurantCardItem[];
   isLoading: boolean;
-  onPressItem: (id: number) => void;
+  onPressItem: (id: RestaurantCardItem['id']) => void;
   onEndReached?: () => void;
   isRefetching?: boolean;
   onRefresh?: () => void;
   header?: React.ReactNode;
-  empty?: React.ReactNode;
+  emptyText?: string;
 };
 
-export type MovieListRef = FlatList;
+export type RestaurantsListRef = FlatList;
 
-const MovieList = forwardRef<MovieListRef, MovieListProps>(
+const RestaurantsList = forwardRef<RestaurantsListRef, RestaurantsListProps>(
   (
     {
       data,
@@ -27,7 +27,7 @@ const MovieList = forwardRef<MovieListRef, MovieListProps>(
       onRefresh,
       isRefetching = false,
       header = null,
-      empty = null,
+      emptyText,
     },
     ref
   ) => {
@@ -35,7 +35,7 @@ const MovieList = forwardRef<MovieListRef, MovieListProps>(
       if (!isLoading) {
         return null;
       }
-      return <Spinner />;
+      return <Spinner className="text-primary" />;
     };
 
     return (
@@ -44,14 +44,24 @@ const MovieList = forwardRef<MovieListRef, MovieListProps>(
         ref={ref}
         data={data}
         extraData={data}
+        contentContainerClassName="gap-y-2"
+        className="px-2"
         ListFooterComponentStyle={{
           flexGrow: 1,
         }}
-        ListEmptyComponent={React.isValidElement(empty) ? empty : null}
+        ListEmptyComponent={
+          !!emptyText ? (
+            <View className="flex justify-center items-center">
+              <Text className="font-roober-semi text-body text-black">
+                {emptyText}
+              </Text>
+            </View>
+          ) : null
+        }
         ListHeaderComponent={React.isValidElement(header) ? header : null}
-        keyExtractor={(item) => item?.id?.toString()}
+        keyExtractor={(item) => item.id.toString()}
         renderItem={({ item }) => (
-          <MovieCard movie={item} onPress={onPressItem} />
+          <RestaurantCard restaurant={item} onPress={onPressItem} />
         )}
         {...(typeof onRefresh === 'function' && {
           refreshing: isRefetching,
@@ -75,6 +85,6 @@ const MovieList = forwardRef<MovieListRef, MovieListProps>(
   }
 );
 
-MovieList.displayName = 'MovieList';
+RestaurantsList.displayName = 'RestaurantsList';
 
-export default MovieList;
+export default RestaurantsList;

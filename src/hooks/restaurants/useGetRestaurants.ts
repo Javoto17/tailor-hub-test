@@ -4,19 +4,17 @@ import { generateRestaurantsRepository } from '@/modules/restaurants/infrastruct
 import { generateStorageRepository } from '@/modules/storage/infrastructure/StorageRepository';
 import { useQuery } from '@tanstack/react-query';
 
-const clientRepository = generateClientRepository();
 const storageRepository = generateStorageRepository();
-const restaurantsRepository = generateRestaurantsRepository(
-  clientRepository,
-  storageRepository
-);
+const clientRepository = generateClientRepository(storageRepository);
+const restaurantsRepository = generateRestaurantsRepository(clientRepository);
 
-export function useGetRestaurants() {
-  const { data, isLoading, isSuccess, isError } = useQuery({
+export function useGetRestaurants(enabled = false) {
+  const { data, isLoading, isSuccess, isError, refetch } = useQuery({
     queryKey: ['restaurants'],
     queryFn: async () => {
       return await getRestaurants(restaurantsRepository)();
     },
+    enabled,
   });
 
   return {
@@ -24,5 +22,6 @@ export function useGetRestaurants() {
     isLoading,
     isSuccess,
     isError,
+    refetch,
   };
 }

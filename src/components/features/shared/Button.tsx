@@ -5,7 +5,7 @@ import { tv, VariantProps } from 'tailwind-variants';
 const buttonVariants = tv({
   slots: {
     button: 'py-4 px-8 flex flex-row items-center justify-center text-primary',
-    label: 'font-semibold leading-semibold text-caption',
+    label: 'font-semibold leading-semibold text-body-small',
   },
   variants: {
     variant: {
