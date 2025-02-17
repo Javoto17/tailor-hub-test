@@ -1,21 +1,26 @@
 import React from 'react';
-import { StyleSheet, View } from 'react-native';
+import { View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 interface LayoutProps {
   children: React.ReactNode;
   withHeader?: boolean;
+  withTabs?: boolean;
 }
 
-const Layout: React.FC<LayoutProps> = ({ children, withHeader = false }) => {
+const Layout: React.FC<LayoutProps> = ({
+  children,
+  withHeader = false,
+  withTabs = false,
+}) => {
   const insets = useSafeAreaInsets();
 
   return (
     <View
-      className={`flex-1 bg-light`}
+      className={`flex-1 bg-light relative`}
       style={{
         paddingTop: withHeader ? 0 : insets.top,
-        paddingBottom: insets.bottom,
+        paddingBottom: withTabs ? 0 : insets.bottom,
         paddingLeft: insets.left,
         paddingRight: insets.right,
       }}

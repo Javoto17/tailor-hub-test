@@ -1,53 +1,27 @@
-import React, { useCallback } from 'react';
-import { Text, View } from 'react-native';
+import React, { useEffect } from 'react';
+import RestaurantsList from '@/components/features/restaurants/RestaurantsList';
 
-import MovieList from '@/components/features/movies/MoviesList';
-import { FavoritesScreenProps } from '@/components/features/navigation/Navigation';
 import Layout from '@/components/features/shared/Layout';
 
-import { MovieCardItem } from '@/components/features/movies/MovieCard';
-import { useGetMoviesFavorites } from '@/hooks/restaurants/useGetMoviesFavorites';
-import { useRefreshOnFocus } from '@/hooks/restaurants/useRefreshOnFocus';
-import Spinner from '@/components/features/shared/Spinner';
+import { FavoritesScreenProps } from '@/components/features/navigation/Navigation';
+import { useFavoritesRestaurant } from '@/hooks/user/useFavoritesRestaurant';
 
-const FavoritesScreen: React.FC<FavoritesScreenProps> = ({
-  navigation,
-  route,
-}) => {
-  const { data, isError, isLoading, refetch, isRefetching } =
-    useGetMoviesFavorites();
+const FavoritesScreen: React.FC<FavoritesScreenProps> = ({ navigation }) => {
+  const { favorites } = useFavoritesRestaurant();
 
-  const onPressItem = (id: number) => {
-    navigation.navigate('Detail', {
-      id,
+  useEffect(() => {
+    navigation.setOptions({
+      title: 'Favorites',
     });
+  }, [navigation]);
+
+  const handlePressItem = (id: string) => {
+    navigation.navigate('RestaurantDetail', { id });
   };
 
-  if (isLoading || isRefetching) {
-    return <Spinner />;
-  }
-
-  if (isError) {
-    return (
-      <Layout>
-        <View>
-          <Text>Ups.. Something wrong happens</Text>
-        </View>
-      </Layout>
-    );
-  }
-
   return (
-    <Layout>
-      <MovieList
-        data={data as MovieCardItem[]}
-        isLoading={isLoading}
-        onPressItem={onPressItem}
-        isRefetching={isRefetching}
-        onRefresh={() => {
-          refetch();
-        }}
-      />
+    <Layout withHeader withTabs>
+      <RestaurantsList data={favorites} onPressItem={handlePressItem} />
     </Layout>
   );
 };

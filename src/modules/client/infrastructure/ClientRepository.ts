@@ -20,6 +20,7 @@ const setCustomHeaders = (
 
   return header;
 };
+
 export const generateClientRepository = (
   storageRepository: StorageRepository
 ): ClientRepository => {
@@ -78,7 +79,77 @@ export const generateClientRepository = (
         );
       }
 
+      if (response?.status === 200) {
+        return {
+          data: (await response.text()) as T,
+          headers: response.headers,
+        };
+      }
+
       return { data: (await response.json()) as T, headers: response.headers };
+    },
+    put: async function put<T>(
+      url: string,
+      data: unknown,
+      options: RequestInit = {}
+    ): Promise<{ data: T; headers: Headers }> {
+      const token = await storageRepository.get('token');
+
+      const headers = setCustomHeaders(
+        options?.headers as Record<string, string>,
+        token
+      );
+
+      const fetchOptions: RequestInit = {
+        ...options,
+        method: 'PUT',
+        headers,
+        body: JSON.stringify(data),
+      };
+
+      const response = await fetch(url, fetchOptions);
+
+      if (!response.ok) {
+        throw new Error(
+          `Error fetching data: ${response?.status} -> ${response.statusText}`
+        );
+      }
+
+      return { data: (await response.json()) as T, headers: response.headers };
+    },
+    remove: async function remove<T>(
+      url: string,
+      options: RequestInit = {}
+    ): Promise<{ headers: Headers; data: T }> {
+      const token = await storageRepository.get('token');
+
+      const headers = setCustomHeaders(
+        options?.headers as Record<string, string>,
+        token
+      );
+
+      const fetchOptions: RequestInit = {
+        ...options,
+        method: 'DELETE',
+        headers,
+      };
+
+      const response = await fetch(url, fetchOptions);
+
+      if (!response.ok) {
+        throw new Error(
+          `Error fetching data: ${response?.status} -> ${response.statusText}`
+        );
+      }
+
+      if (response?.status === 200) {
+        return {
+          headers: response.headers,
+          data: (await response.json()) as T,
+        };
+      }
+
+      return { headers: response.headers, data: (await response.text()) as T };
     },
   };
 };

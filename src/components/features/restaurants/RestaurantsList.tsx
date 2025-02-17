@@ -2,12 +2,14 @@ import React, { forwardRef } from 'react';
 import { FlatList, Text, View } from 'react-native';
 
 import Spinner from '../shared/Spinner';
-import RestaurantCard, { RestaurantCardItem } from './RestaurantCard';
+import RestaurantCard from './RestaurantCard';
+import { useFavoritesRestaurant } from '@/hooks/user/useFavoritesRestaurant';
+import { Restaurant } from '@/modules/restaurants/domain/Restaurant';
 
 type RestaurantsListProps = {
-  data: RestaurantCardItem[];
-  isLoading: boolean;
-  onPressItem: (id: RestaurantCardItem['id']) => void;
+  data: Restaurant[];
+  isLoading?: boolean;
+  onPressItem?: (id: Restaurant['_id']) => void;
   onEndReached?: () => void;
   isRefetching?: boolean;
   onRefresh?: () => void;
@@ -21,16 +23,27 @@ const RestaurantsList = forwardRef<RestaurantsListRef, RestaurantsListProps>(
   (
     {
       data,
-      isLoading,
       onPressItem,
       onEndReached,
       onRefresh,
+      isLoading = false,
       isRefetching = false,
       header = null,
-      emptyText,
+      emptyText = null,
     },
     ref
   ) => {
+    const { addFavoriteRestaurant, removeFavoriteRestaurant } =
+      useFavoritesRestaurant();
+
+    const toggleFavorite = (item: Restaurant) => {
+      if (item.isFavorite) {
+        removeFavoriteRestaurant(item._id);
+        return;
+      }
+      addFavoriteRestaurant(item);
+    };
+
     const renderFooter = () => {
       if (!isLoading) {
         return null;
@@ -59,9 +72,19 @@ const RestaurantsList = forwardRef<RestaurantsListRef, RestaurantsListProps>(
           ) : null
         }
         ListHeaderComponent={React.isValidElement(header) ? header : null}
-        keyExtractor={(item) => item.id.toString()}
+        keyExtractor={(item) => item?._id}
         renderItem={({ item }) => (
-          <RestaurantCard restaurant={item} onPress={onPressItem} />
+          <RestaurantCard
+            restaurant={item}
+            onPress={() => {
+              if (typeof onPressItem === 'function') {
+                onPressItem(item._id);
+              }
+            }}
+            onPressFavorite={() => {
+              toggleFavorite(item);
+            }}
+          />
         )}
         {...(typeof onRefresh === 'function' && {
           refreshing: isRefetching,

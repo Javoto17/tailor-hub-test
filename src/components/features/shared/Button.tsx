@@ -2,6 +2,8 @@ import React from 'react';
 import { TouchableOpacity, TouchableOpacityProps, Text } from 'react-native';
 import { tv, VariantProps } from 'tailwind-variants';
 
+import Ionicons from '@react-native-vector-icons/ionicons';
+
 const buttonVariants = tv({
   slots: {
     button: 'py-4 px-8 flex flex-row items-center justify-center text-primary',
@@ -76,6 +78,11 @@ type ButtonVariants = VariantProps<typeof buttonVariants>;
 
 export interface ButtonProps extends TouchableOpacityProps, ButtonVariants {
   label?: string;
+  icon?: {
+    name: 'trash';
+    size?: number;
+    color?: string;
+  };
 }
 
 const Button: React.FC<ButtonProps> = ({
@@ -86,6 +93,7 @@ const Button: React.FC<ButtonProps> = ({
   children,
   color = 'primary',
   size = 'small',
+  icon,
   ...props
 }) => {
   const { button, label: tvLabel } = buttonVariants({
@@ -106,6 +114,8 @@ const Button: React.FC<ButtonProps> = ({
         children
       ) : label ? (
         <Text className={tvLabel()}>{label}</Text>
+      ) : icon ? (
+        <Ionicons name={icon.name} size={icon.size} color={icon.color} />
       ) : null}
     </TouchableOpacity>
   );

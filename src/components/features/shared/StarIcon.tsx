@@ -8,16 +8,16 @@ interface StarIconProps {
   height?: number;
   className?: string;
   style?: StyleProp<ViewStyle>;
-  empty?: boolean;
+  filled?: boolean;
 }
 
 const StarIcon = ({
   width = 16,
-  height = 17,
-  empty,
+  height = 16,
+  filled,
   ...props
 }: StarIconProps) => {
-  return empty ? (
+  return (
     <Svg
       width={width}
       height={height}
@@ -26,18 +26,9 @@ const StarIcon = ({
       {...props}
     >
       <Path
-        fill="none"
-        stroke="currentColor"
-        strokeWidth={1}
-        d="m8 .5 1.17 5.177 4.487-2.834-2.834 4.488L16 8.5l-5.177 1.17 2.834 4.487-4.488-2.834L8 16.5l-1.17-5.177-4.487 2.834 2.834-4.488L0 8.5l5.177-1.17-2.834-4.487 4.488 2.834L8 .5Z"
-      />
-    </Svg>
-  ) : (
-    <Svg width={width} height={height} fill="none" {...props}>
-      <Path
-        fill="currentColor"
-        stroke="currentColor"
-        strokeWidth={1}
+        fill={filled ? 'currentColor' : 'none'}
+        stroke={filled ? 'none' : 'currentColor'}
+        strokeWidth={filled ? 0 : 0.5}
         d="m8 .5 1.17 5.177 4.487-2.834-2.834 4.488L16 8.5l-5.177 1.17 2.834 4.487-4.488-2.834L8 16.5l-1.17-5.177-4.487 2.834 2.834-4.488L0 8.5l5.177-1.17-2.834-4.487 4.488 2.834L8 .5Z"
       />
     </Svg>

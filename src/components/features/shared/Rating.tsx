@@ -4,16 +4,18 @@ import StarIcon from './StarIcon';
 
 const Rating: React.FC<{
   value: number;
-  max: number;
+  max?: number;
   onRate?: (value: number) => void;
-}> = ({ value, max, onRate }) => {
+}> = ({ value, max = 5, onRate }) => {
   return (
     <View className="flex-row items-center gap-x-1">
       {[...Array(max)].map((_, index) => (
         <TouchableOpacity key={index} onPress={() => onRate?.(index + 1)}>
           <StarIcon
             className={index < value ? 'text-primary' : 'text-black'}
-            empty={index >= value}
+            filled={index < value}
+            width={18}
+            height={18}
           />
         </TouchableOpacity>
       ))}

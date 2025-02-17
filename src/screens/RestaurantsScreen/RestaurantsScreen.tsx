@@ -1,7 +1,6 @@
 import React, { useCallback, useEffect, useRef } from 'react';
 
 import { RestaurantsScreenProps } from '@/components/features/navigation/Navigation';
-import { RestaurantCardItem } from '@/components/features/restaurants/RestaurantCard';
 import RestaurantsList, {
   RestaurantsListRef,
 } from '@/components/features/restaurants/RestaurantsList';
@@ -29,8 +28,8 @@ const RestaurantsScreen: React.FC<RestaurantsScreenProps> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const onPressItem = (id: RestaurantCardItem['id']) => {
-    console.log(id);
+  const onPressItem = (id: string) => {
+    navigation.navigate('RestaurantDetail', { id });
   };
 
   const onEndReached = useCallback(() => {
@@ -52,9 +51,9 @@ const RestaurantsScreen: React.FC<RestaurantsScreenProps> = ({
   }, [isLoadingError, data?.length, isLoading]);
 
   return (
-    <Layout withHeader>
+    <Layout withHeader withTabs>
       <RestaurantsList
-        data={(data as RestaurantCardItem[]) ?? []}
+        data={data ?? []}
         ref={refList}
         isLoading={isLoading}
         onPressItem={onPressItem}

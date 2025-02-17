@@ -1,32 +1,28 @@
 import { generateClientRepository } from '@/modules/client/infrastructure/ClientRepository';
-import { getRestaurants } from '@/modules/restaurants/application/get/getRestaurants';
-import { Restaurant } from '@/modules/restaurants/domain/Restaurant';
+import { getRestaurantDetail } from '@/modules/restaurants/application/get/getRestaurantDetail';
 import { generateRestaurantsRepository } from '@/modules/restaurants/infrastructure/RestaurantRepository';
 import { generateStorageRepository } from '@/modules/storage/infrastructure/StorageRepository';
 import { useRestaurantsStore } from '@/stores/restaurants/restaurantsStore';
 import { useQuery } from '@tanstack/react-query';
+import { useMemo } from 'react';
 
 const storageRepository = generateStorageRepository();
 const clientRepository = generateClientRepository(storageRepository);
 const restaurantsRepository = generateRestaurantsRepository(clientRepository);
 
-export function useGetRestaurants(enabled = false) {
-  const { restaurants } = useRestaurantsStore();
+export function useGetRestaurantDetail(id: string) {
   const { data, isLoading, isSuccess, isError, refetch } = useQuery({
-    queryKey: ['restaurants'],
+    queryKey: ['restaurant-detail', id],
     queryFn: async () => {
-      return await getRestaurants(restaurantsRepository)();
+      return await getRestaurantDetail(restaurantsRepository)(id);
     },
-    select: (allRestaurants) => {
-      return allRestaurants.map((restaurant) => ({
-        ...restaurant,
-        isFavorite: restaurants.some(
-          (favorite: Restaurant) => favorite._id === restaurant._id
-        ),
-      }));
-    },
-    enabled,
   });
+
+  const { restaurants } = useRestaurantsStore();
+
+  const isFavorite = useMemo(() => {
+    return restaurants.some((restaurant) => restaurant._id === id);
+  }, [restaurants, id]);
 
   return {
     data,
@@ -34,5 +30,6 @@ export function useGetRestaurants(enabled = false) {
     isSuccess,
     isError,
     refetch,
+    isFavorite,
   };
 }

@@ -13,6 +13,7 @@ module.exports = withTV({
         black: '#0B0B0B',
         light: '#FFFFFF',
         lightGray: '#ffffff99',
+        gray: '#F1F1F04D',
       },
       fontFamily: {
         system: platformSelect({

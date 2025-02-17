@@ -1,22 +1,15 @@
 import React from 'react';
 import { Image, Text, TouchableOpacity, View } from 'react-native';
 
-import Rating from '../shared/Rating';
-import HearthIcon from '../shared/HearthIcon';
+import { Restaurant } from '@/modules/restaurants/domain/Restaurant';
 
-export interface RestaurantCardItem {
-  id: string;
-  image: string;
-  name: string;
-  address: string;
-  rating: number;
-  totalReviews: number;
-}
+import HearthIcon from '../shared/HearthIcon';
+import Rating from '../shared/Rating';
 
 interface RestaurantCardProps {
-  restaurant: RestaurantCardItem;
-  onPress: (id: RestaurantCardItem['id']) => void;
-  onPressFavorite?: (id: RestaurantCardItem['id']) => void;
+  restaurant: Restaurant;
+  onPress: () => void;
+  onPressFavorite?: () => void;
 }
 
 const RestaurantCard: React.FC<RestaurantCardProps> = ({
@@ -25,10 +18,7 @@ const RestaurantCard: React.FC<RestaurantCardProps> = ({
   onPressFavorite,
 }) => {
   return (
-    <TouchableOpacity
-      onPress={() => onPress(restaurant?.id)}
-      testID={restaurant?.id}
-    >
+    <TouchableOpacity onPress={onPress} testID={restaurant?._id}>
       <View className="flex flex-row gap-x-1 items-center">
         <View className="overflow-hidden rounded-2xl relative h-24 w-24 bg-secondary">
           <Image
@@ -47,16 +37,16 @@ const RestaurantCard: React.FC<RestaurantCardProps> = ({
             <Text className="text-caption text-dark" numberOfLines={3}>
               {restaurant.address}
             </Text>
-            <View className="flex flex-row gap-x-2">
-              <Rating value={Math.ceil(restaurant.rating)} max={5} />
+            <View className="flex flex-row gap-x-2 items-end">
+              <Rating value={Math.ceil(restaurant.avgRating)} max={5} />
               <Text className="text-body-small text-dark">
-                {`(${restaurant.totalReviews ?? 0} reviews) `}
+                {`(${restaurant?.reviews?.length} reviews) `}
               </Text>
             </View>
           </View>
           <View className="px-2">
-            <TouchableOpacity onPress={() => onPressFavorite?.(restaurant?.id)}>
-              <HearthIcon />
+            <TouchableOpacity onPress={onPressFavorite}>
+              <HearthIcon filled={restaurant?.isFavorite} />
             </TouchableOpacity>
           </View>
         </View>

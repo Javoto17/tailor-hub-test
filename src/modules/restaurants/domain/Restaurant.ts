@@ -1,17 +1,15 @@
-type Reviews = {
-  _id: string;
-  rating: number;
-  comment: string;
-  createdAt: string;
-  updatedAt: string;
-};
+import { Review } from '@/modules/comments/domain/Comment';
 
-export type Restaurant = {
+export interface Restaurant {
   _id: string;
   name: string;
+  description: string;
+  image: string;
   address: string;
   phone: string;
-  image: string;
   avgRating: number;
-  reviews: Reviews[];
-};
+  reviews: Review[];
+  isFavorite?: boolean;
+}
+
+export type RestaurantDetail = Restaurant & {};

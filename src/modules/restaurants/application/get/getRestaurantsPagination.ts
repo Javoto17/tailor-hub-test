@@ -7,17 +7,5 @@ export const getRestaurantsPagination =
       limit: 10,
     });
 
-    const formattedData = data?.results.map((restaurant) => ({
-      id: restaurant._id,
-      name: restaurant.name,
-      address: restaurant.address,
-      image: restaurant.image,
-      rating: restaurant.avgRating,
-      totalReviews: restaurant.reviews.length,
-    }));
-
-    return {
-      ...data,
-      results: formattedData,
-    };
+    return data;
   };

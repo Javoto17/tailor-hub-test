@@ -1,4 +1,4 @@
-import { Restaurant } from './Restaurant';
+import { Restaurant, RestaurantDetail } from './Restaurant';
 
 interface GetRestaurantsParams {
   page: number;
@@ -6,6 +6,7 @@ interface GetRestaurantsParams {
 }
 
 export interface RestaurantRepository {
+  getRestaurantById: (id: string) => Promise<RestaurantDetail>;
   getRestaurantsPagination: (params: GetRestaurantsParams) => Promise<{
     page: number;
     limit: number;

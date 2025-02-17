@@ -1,6 +1,6 @@
 import { ClientRepository } from '@/modules/client/domain/ClientRepository';
 import { RestaurantRepository } from '../domain/RestaurantRepository';
-import { Restaurant } from '../domain/Restaurant';
+import { Restaurant, RestaurantDetail } from '../domain/Restaurant';
 
 const API_URL = process.env.API_URL;
 
@@ -41,21 +41,34 @@ export const generateRestaurantsRepository = (
         limit: 10,
       }
     ) => {
-      const { data } = await clientRepository.get<GetRestaurantsResponse>(
-        API_URL + `restaurant/list?page=${params?.page}&limit=${params?.limit}`
+      try {
+        const { data } = await clientRepository.get<GetRestaurantsResponse>(
+          API_URL +
+            `restaurant/list?page=${params?.page}&limit=${params?.limit}`
+        );
+
+        return {
+          page: params?.page,
+          limit: params?.limit,
+          totalPages: getTotalPagesByLimit(data?.total, params?.limit),
+          nextCursor:
+            params?.page < getTotalPagesByLimit(data?.total, params?.limit)
+              ? params?.page + 1
+              : null,
+          total: data.total,
+          results: data.restaurantList,
+        };
+      } catch (error) {
+        console.log(error);
+        throw error;
+      }
+    },
+    getRestaurantById: async (id: string) => {
+      const { data } = await clientRepository.get<RestaurantDetail>(
+        API_URL + `restaurant/detail/${id}`
       );
 
-      return {
-        page: params?.page,
-        limit: params?.limit,
-        totalPages: getTotalPagesByLimit(data?.total, params?.limit),
-        nextCursor:
-          params?.page < getTotalPagesByLimit(data?.total, params?.limit)
-            ? params?.page + 1
-            : null,
-        total: data.total,
-        results: data.restaurantList,
-      };
+      return data;
     },
   };
 };

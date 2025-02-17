@@ -2,6 +2,7 @@ import { generateClientRepository } from '@/modules/client/infrastructure/Client
 import { getRestaurantsPagination } from '@/modules/restaurants/application/get/getRestaurantsPagination';
 import { generateRestaurantsRepository } from '@/modules/restaurants/infrastructure/RestaurantRepository';
 import { generateStorageRepository } from '@/modules/storage/infrastructure/StorageRepository';
+import { useRestaurantsStore } from '@/stores/restaurants/restaurantsStore';
 import { useInfiniteQuery } from '@tanstack/react-query';
 
 const storageRepository = generateStorageRepository();
@@ -9,6 +10,7 @@ const clientRepository = generateClientRepository(storageRepository);
 const restaurantsRepository = generateRestaurantsRepository(clientRepository);
 
 export function useGetRestaurantsPagination() {
+  const { restaurants: favorites } = useRestaurantsStore();
   const {
     data,
     isSuccess,
@@ -30,7 +32,14 @@ export function useGetRestaurantsPagination() {
       return null;
     },
     select: (result) => {
-      return result.pages.flatMap((page) => page.results);
+      return result.pages.flatMap((page) =>
+        page.results.map((restaurant) => ({
+          ...restaurant,
+          isFavorite: favorites.some(
+            (favorite) => favorite._id === restaurant._id
+          ),
+        }))
+      );
     },
     retry: 3,
     retryDelay: 1500,
