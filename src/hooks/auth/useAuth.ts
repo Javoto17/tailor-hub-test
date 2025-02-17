@@ -33,6 +33,7 @@ export function useAuth() {
     login: loginAction,
     logout: logoutAction,
     verifyToken: verifyTokenAction,
+    user,
   } = useAuthStore();
 
   const verifyTokenMutation = useMutation({
@@ -89,6 +90,7 @@ export function useAuth() {
   };
 
   return {
+    user,
     signUpUser,
     loginUser,
     logoutUser,

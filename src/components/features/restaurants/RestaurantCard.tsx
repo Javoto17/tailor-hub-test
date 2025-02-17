@@ -1,88 +1,58 @@
 import React from 'react';
-import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Image, Text, TouchableOpacity, View } from 'react-native';
 
-export interface MovieCardItem {
-  id: number;
-  poster_path: string;
-  title: string;
-  overview: string;
-  release_date: string;
-  vote_average: number;
+import { Restaurant } from '@/modules/restaurants/domain/Restaurant';
+
+import HearthIcon from '../shared/HearthIcon';
+import Rating from '../shared/Rating';
+
+interface RestaurantCardProps {
+  restaurant: Restaurant;
+  onPress: () => void;
+  onPressFavorite?: () => void;
 }
 
-interface MovieCardProps {
-  movie: MovieCardItem;
-  onPress: (id: MovieCardItem['id']) => void;
-}
-
-const MovieCard: React.FC<MovieCardProps> = ({ movie, onPress }) => {
+const RestaurantCard: React.FC<RestaurantCardProps> = ({
+  restaurant,
+  onPress,
+  onPressFavorite,
+}) => {
   return (
-    <TouchableOpacity
-      onPress={() => onPress(movie?.id)}
-      testID={movie?.id.toString()}
-    >
-      <View style={styles.card}>
-        <Image
-          source={{
-            uri: `https://image.tmdb.org/t/p/w500${movie.poster_path}`,
-          }}
-          style={styles.poster}
-        />
-        <View style={styles.infoContainer}>
-          <Text style={styles.title}>{movie.title}</Text>
-          <Text style={styles.overview} numberOfLines={3}>
-            {movie.overview}
-          </Text>
-          <Text style={styles.releaseDate}>
-            Release Date: {movie.release_date}
-          </Text>
-          <Text style={styles.voteAverage}>
-            Rating: {movie.vote_average} / 10
-          </Text>
+    <TouchableOpacity onPress={onPress} testID={restaurant?._id}>
+      <View className="flex flex-row gap-x-1 items-center">
+        <View className="overflow-hidden rounded-2xl relative h-24 w-24 bg-secondary">
+          <Image
+            source={{
+              uri: restaurant.image,
+            }}
+            resizeMode="cover"
+            className="absolute w-full h-full"
+          />
+        </View>
+        <View className="flex-1 flex-row gap-x-2">
+          <View className="flex-1 py-2 px-2 gap-y-1">
+            <Text className="text-body-small font-semibold text-dark">
+              {restaurant.name}
+            </Text>
+            <Text className="text-caption text-dark" numberOfLines={3}>
+              {restaurant.address}
+            </Text>
+            <View className="flex flex-row gap-x-2 items-end">
+              <Rating value={Math.ceil(restaurant.avgRating)} max={5} />
+              <Text className="text-body-small text-dark">
+                {`(${restaurant?.reviews?.length} reviews) `}
+              </Text>
+            </View>
+          </View>
+          <View className="px-2">
+            <TouchableOpacity onPress={onPressFavorite}>
+              <HearthIcon filled={restaurant?.isFavorite} />
+            </TouchableOpacity>
+          </View>
         </View>
       </View>
     </TouchableOpacity>
   );
 };
 
-const styles = StyleSheet.create({
-  card: {
-    flexDirection: 'row',
-    margin: 10,
-    backgroundColor: '#fff',
-    borderRadius: 8,
-    overflow: 'hidden',
-    elevation: 3,
-  },
-  poster: {
-    width: 100,
-    height: '100%',
-  },
-  infoContainer: {
-    flex: 1,
-    padding: 10,
-  },
-  title: {
-    fontSize: 18,
-    fontWeight: 'bold',
-  },
-  overview: {
-    marginTop: 4,
-    color: '#666',
-  },
-  releaseDate: {
-    marginTop: 12,
-    fontSize: 12,
-    color: '#888',
-  },
-  voteAverage: {
-    marginTop: 4,
-    fontSize: 14,
-    fontWeight: 'bold',
-  },
-  genresWrapper: {
-    paddingTop: 4,
-  },
-});
-
-export default MovieCard;
+export default RestaurantCard;

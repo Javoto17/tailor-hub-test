@@ -25,6 +25,6 @@ const ArrowIcon = ({ width = 24, height = 24, ...props }: ArrowIconProps) => (
 
 export default cssInterop(ArrowIcon, {
   className: {
-    target: 'style', // map className->style
+    target: 'style',
   },
 });

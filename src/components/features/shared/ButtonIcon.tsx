@@ -5,18 +5,27 @@ import Ionicons from '@react-native-vector-icons/ionicons';
 
 export interface ButtonIconProps extends TouchableOpacityProps {
   color?: string;
-  icon: 'bookmark' | 'bookmarks' | 'close-circle-sharp';
+  icon?: 'bookmark' | 'bookmarks' | 'close-circle-sharp';
+  children?: React.ReactNode;
 }
 
 const ButtonIcon: React.FC<ButtonIconProps> = ({
   onPress,
   icon,
-  color = '#000000',
+  children,
   ...props
 }) => {
   return (
-    <TouchableOpacity {...props} onPress={onPress}>
-      <Ionicons {...props} name={icon} size={24} color={color} />
+    <TouchableOpacity
+      {...props}
+      onPress={onPress}
+      className="bg-gray p-2 rounded-full"
+    >
+      {children ? (
+        children
+      ) : icon ? (
+        <Ionicons {...props} name={icon} size={24} />
+      ) : null}
     </TouchableOpacity>
   );
 };

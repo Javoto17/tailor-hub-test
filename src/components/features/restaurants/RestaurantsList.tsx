@@ -1,41 +1,54 @@
 import React, { forwardRef } from 'react';
-import { FlatList } from 'react-native';
+import { FlatList, Text, View } from 'react-native';
 
-import MovieCard, { MovieCardItem } from './RestaurantCard';
 import Spinner from '../shared/Spinner';
+import RestaurantCard from './RestaurantCard';
+import { useFavoritesRestaurant } from '@/hooks/user/useFavoritesRestaurant';
+import { Restaurant } from '@/modules/restaurants/domain/Restaurant';
 
-type MovieListProps = {
-  data: MovieCardItem[];
-  isLoading: boolean;
-  onPressItem: (id: number) => void;
+type RestaurantsListProps = {
+  data: Restaurant[];
+  isLoading?: boolean;
+  onPressItem?: (id: Restaurant['_id']) => void;
   onEndReached?: () => void;
   isRefetching?: boolean;
   onRefresh?: () => void;
   header?: React.ReactNode;
-  empty?: React.ReactNode;
+  emptyText?: string;
 };
 
-export type MovieListRef = FlatList;
+export type RestaurantsListRef = FlatList;
 
-const MovieList = forwardRef<MovieListRef, MovieListProps>(
+const RestaurantsList = forwardRef<RestaurantsListRef, RestaurantsListProps>(
   (
     {
       data,
-      isLoading,
       onPressItem,
       onEndReached,
       onRefresh,
+      isLoading = false,
       isRefetching = false,
       header = null,
-      empty = null,
+      emptyText = null,
     },
     ref
   ) => {
+    const { addFavoriteRestaurant, removeFavoriteRestaurant } =
+      useFavoritesRestaurant();
+
+    const toggleFavorite = (item: Restaurant) => {
+      if (item.isFavorite) {
+        removeFavoriteRestaurant(item._id);
+        return;
+      }
+      addFavoriteRestaurant(item);
+    };
+
     const renderFooter = () => {
       if (!isLoading) {
         return null;
       }
-      return <Spinner />;
+      return <Spinner className="text-primary" />;
     };
 
     return (
@@ -44,14 +57,34 @@ const MovieList = forwardRef<MovieListRef, MovieListProps>(
         ref={ref}
         data={data}
         extraData={data}
+        contentContainerClassName="gap-y-2"
+        className="px-2"
         ListFooterComponentStyle={{
           flexGrow: 1,
         }}
-        ListEmptyComponent={React.isValidElement(empty) ? empty : null}
+        ListEmptyComponent={
+          !!emptyText ? (
+            <View className="flex justify-center items-center">
+              <Text className="font-roober-semi text-body text-black">
+                {emptyText}
+              </Text>
+            </View>
+          ) : null
+        }
         ListHeaderComponent={React.isValidElement(header) ? header : null}
-        keyExtractor={(item) => item?.id?.toString()}
+        keyExtractor={(item) => item?._id}
         renderItem={({ item }) => (
-          <MovieCard movie={item} onPress={onPressItem} />
+          <RestaurantCard
+            restaurant={item}
+            onPress={() => {
+              if (typeof onPressItem === 'function') {
+                onPressItem(item._id);
+              }
+            }}
+            onPressFavorite={() => {
+              toggleFavorite(item);
+            }}
+          />
         )}
         {...(typeof onRefresh === 'function' && {
           refreshing: isRefetching,
@@ -75,6 +108,6 @@ const MovieList = forwardRef<MovieListRef, MovieListProps>(
   }
 );
 
-MovieList.displayName = 'MovieList';
+RestaurantsList.displayName = 'RestaurantsList';
 
-export default MovieList;
+export default RestaurantsList;

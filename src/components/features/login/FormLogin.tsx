@@ -75,11 +75,11 @@ const FormLogin = ({ onPressLink, onSubmit }: FormLoginProps) => {
           onPress={handleSubmit(thisOnSubmit)}
         />
         <View className="flex flex-row items-center justify-center gap-x-2">
-          <Text className="text-caption text-white">
+          <Text className="text-body-small text-white">
             ¿No tienes una cuenta?
           </Text>
           <TouchableWithoutFeedback onPress={onPressLink}>
-            <Text className="text-caption text-white">Regístrate</Text>
+            <Text className="text-body-small text-white">Regístrate</Text>
           </TouchableWithoutFeedback>
         </View>
       </View>

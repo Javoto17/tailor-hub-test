@@ -13,6 +13,7 @@ module.exports = withTV({
         black: '#0B0B0B',
         light: '#FFFFFF',
         lightGray: '#ffffff99',
+        gray: '#F1F1F04D',
       },
       fontFamily: {
         system: platformSelect({
@@ -30,10 +31,16 @@ module.exports = withTV({
             lineHeight: '28px',
           },
         ],
-        caption: [
+        'body-small': [
           '16px',
           {
             lineHeight: '19.2px',
+          },
+        ],
+        caption: [
+          '14px',
+          {
+            lineHeight: '16.8px',
           },
         ],
       },
