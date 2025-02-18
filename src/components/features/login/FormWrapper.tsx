@@ -9,7 +9,7 @@ interface FormWrapperProps extends ViewProps {
 const FormWrapper = ({ children, className, ...props }: FormWrapperProps) => {
   return (
     <View
-      className={`flex-1 bg-primary p-4 rounded-[32px] ${className}`}
+      className={` bg-primary p-4 py-8 rounded-[32px] ${className} min-h-[250px]`}
       {...props}
     >
       {children}

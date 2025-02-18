@@ -1,14 +1,14 @@
 /* eslint-disable react/no-unstable-nested-components */
 import React from 'react';
 
-import Header from '@/components/features/shared/Header';
 import { useAuth } from '@/hooks/auth/useAuth';
 
+import CreateRestaurantScreen from '@/screens/CreateRestaurantScreen/CreateRestaurantScreen';
 import DetailRestaurantScreen from '@/screens/DetailRestaurantScreen/DetailRestaurantScreen';
 import FavoritesScreen from '@/screens/FavoritesScreen/FavoritesScreen';
 import HomeScreen from '@/screens/HomeScreen/HomeScreen';
 import LoginScreen from '@/screens/LoginScreen/LoginScreen';
-import ProfileScreen from '@/screens/ProfileScreen/profileScreen';
+import ProfileScreen from '@/screens/ProfileScreen/ProfileScreen';
 import RestaurantsScreen from '@/screens/RestaurantsScreen/RestaurantsScreen';
 
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
@@ -21,39 +21,37 @@ import {
 import HearthIcon from '../shared/HearthIcon';
 import MarkerIcon from '../shared/MarkerIcon';
 import ProfileIcon from '../shared/ProfileIcon';
+import Header from '../shared/Header';
 
 export type MainStackParamList = {
   Home: undefined;
   Login: undefined;
-};
-
-export type AuthStackParamList = {
-  Favorites: undefined;
-  Restaurants: undefined;
-  Profile: undefined;
+  Tab: undefined;
+  RestaurantCreate: undefined;
   RestaurantDetail: { id: string };
 };
 
+export type TabParamList = {
+  Restaurants: undefined;
+  Favorites: undefined;
+  Profile: undefined;
+};
+
 const Stack = createNativeStackNavigator<MainStackParamList>();
-const AuthTabStack = createBottomTabNavigator<AuthStackParamList>();
+const AuthTabStack = createBottomTabNavigator<TabParamList>();
 
 export type HomeScreenProps = NativeStackScreenProps<
   MainStackParamList,
   'Home'
 >;
 
-export type RestaurantDetailScreenProps = NativeStackScreenProps<
-  AuthStackParamList,
-  'RestaurantDetail'
->;
-
 export type ProfileScreenProps = NativeStackScreenProps<
-  AuthStackParamList,
+  TabParamList,
   'Profile'
 >;
 
 export type FavoritesScreenProps = NativeStackScreenProps<
-  AuthStackParamList,
+  TabParamList,
   'Favorites'
 >;
 
@@ -63,8 +61,18 @@ export type LoginScreenProps = NativeStackScreenProps<
 >;
 
 export type RestaurantsScreenProps = NativeStackScreenProps<
-  AuthStackParamList,
+  TabParamList,
   'Restaurants'
+>;
+
+export type RestaurantDetailScreenProps = NativeStackScreenProps<
+  MainStackParamList,
+  'RestaurantDetail'
+>;
+
+export type CreateRestaurantScreenProps = NativeStackScreenProps<
+  MainStackParamList,
+  'RestaurantCreate'
 >;
 
 export type RestaurantsStackParamList = {
@@ -81,60 +89,7 @@ export type ProfileStackParamList = {
   Profile: undefined;
 };
 
-const RestaurantsStack =
-  createNativeStackNavigator<RestaurantsStackParamList>();
-
-const RestaurantsStackScreen = () => (
-  <RestaurantsStack.Navigator>
-    <RestaurantsStack.Screen
-      name="Restaurants"
-      component={RestaurantsScreen}
-      options={{
-        header: (props) => <Header {...props} />,
-      }}
-    />
-    <RestaurantsStack.Screen
-      name="RestaurantDetail"
-      component={DetailRestaurantScreen}
-      options={{
-        headerShown: false,
-      }}
-    />
-  </RestaurantsStack.Navigator>
-);
-
-const ProfileStack = createNativeStackNavigator<ProfileStackParamList>();
-
-const ProfileStackScreen = () => (
-  <ProfileStack.Navigator initialRouteName="Profile">
-    <ProfileStack.Screen name="Profile" component={ProfileScreen} />
-  </ProfileStack.Navigator>
-);
-
-const FavoritesStack = createNativeStackNavigator<FavoritesStackParamList>();
-
-const FavoritesStackScreen = () => (
-  <FavoritesStack.Navigator initialRouteName="Favorites">
-    <FavoritesStack.Screen
-      name="Favorites"
-      component={FavoritesScreen}
-      options={{
-        header: (props) => <Header {...props} />,
-      }}
-    />
-    <FavoritesStack.Screen
-      name="RestaurantDetail"
-      component={DetailRestaurantScreen}
-      options={{
-        headerShown: false,
-      }}
-    />
-  </FavoritesStack.Navigator>
-);
-
-export const Navigation = () => {
-  const { isAuthenticated } = useAuth();
-
+const AuthStackScreen = () => {
   const iconsByRoute: Record<
     string,
     ({
@@ -155,64 +110,88 @@ export const Navigation = () => {
       <ProfileIcon className={className} width={size} height={size} />
     ),
   };
+
+  return (
+    <AuthTabStack.Navigator
+      initialRouteName="Restaurants"
+      screenOptions={({ route }) => ({
+        tabBarShowLabel: false,
+        tabBarStyle: {},
+        tabBarIcon: ({ focused }) => {
+          const Icon = iconsByRoute[route.name];
+          return (
+            <Icon
+              className={focused ? 'text-primary' : 'text-text'}
+              size={28}
+            />
+          );
+        },
+      })}
+    >
+      <AuthTabStack.Screen
+        name="Restaurants"
+        component={RestaurantsScreen}
+        options={{
+          header: (props) => <Header {...props} />,
+        }}
+      />
+      <AuthTabStack.Screen
+        name="Favorites"
+        component={FavoritesScreen}
+        options={{
+          header: (props) => <Header {...props} />,
+        }}
+      />
+      <AuthTabStack.Screen name="Profile" component={ProfileScreen} />
+    </AuthTabStack.Navigator>
+  );
+};
+
+export const Navigation = () => {
+  const { isAuthenticated } = useAuth();
+
   return (
     <NavigationContainer>
-      {!isAuthenticated ? (
-        <Stack.Navigator initialRouteName="Home">
-          <Stack.Screen
-            name="Home"
-            component={HomeScreen}
-            options={{
+      <Stack.Navigator>
+        {!isAuthenticated ? (
+          <Stack.Group
+            screenOptions={{
               headerShown: false,
             }}
-          />
-          <Stack.Screen
-            name="Login"
-            component={LoginScreen}
-            options={{
+          >
+            <Stack.Screen
+              name="Home"
+              component={HomeScreen}
+              options={{
+                headerShown: false,
+              }}
+            />
+            <Stack.Screen
+              name="Login"
+              component={LoginScreen}
+              options={{
+                headerShown: false,
+              }}
+            />
+          </Stack.Group>
+        ) : (
+          <Stack.Group
+            screenOptions={{
               headerShown: false,
             }}
-          />
-        </Stack.Navigator>
-      ) : (
-        <AuthTabStack.Navigator
-          initialRouteName="Restaurants"
-          screenOptions={({ route }) => ({
-            headerShown: false,
-            tabBarShowLabel: false,
-            tabBarStyle: {},
-            tabBarIcon: ({ focused }) => {
-              const Icon = iconsByRoute[route.name];
-
-              return (
-                <Icon
-                  className={focused ? 'text-primary' : 'text-text'}
-                  size={28}
-                />
-              );
-            },
-          })}
-        >
-          <AuthTabStack.Screen
-            name="Restaurants"
-            component={RestaurantsStackScreen}
-          />
-          <AuthTabStack.Screen
-            name="Favorites"
-            component={FavoritesStackScreen}
-            options={{
-              headerShown: false,
-            }}
-          />
-          <AuthTabStack.Screen
-            name="Profile"
-            component={ProfileStackScreen}
-            options={{
-              headerShown: false,
-            }}
-          />
-        </AuthTabStack.Navigator>
-      )}
+          >
+            <Stack.Screen name="Tab" component={AuthStackScreen} />
+            <Stack.Screen
+              name="RestaurantCreate"
+              component={CreateRestaurantScreen}
+            />
+            <Stack.Screen
+              name="RestaurantDetail"
+              component={DetailRestaurantScreen}
+            />
+          </Stack.Group>
+        )}
+      </Stack.Navigator>
     </NavigationContainer>
   );
 };

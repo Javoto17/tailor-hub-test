@@ -7,15 +7,14 @@ const setCustomHeaders = (
 ) => {
   const header = new Headers();
 
-  header.append('accept', 'application/json');
-  header.append('content-type', 'application/json');
+  header.set('content-type', 'application/json');
 
   if (authPassword) {
-    header.append('authorization', authPassword);
+    header.set('authorization', authPassword);
   }
 
   for (const key in customHeaders) {
-    header.append(key, customHeaders[key]);
+    header.set(key, customHeaders[key]);
   }
 
   return header;
@@ -68,14 +67,15 @@ export const generateClientRepository = (
         ...options,
         method: 'POST',
         headers,
-        body: JSON.stringify(data),
+        body: data instanceof FormData ? data : JSON.stringify(data),
       };
 
       const response = await fetch(url, fetchOptions);
 
       if (!response.ok) {
+        const parsedData = await response.json();
         throw new Error(
-          `Error fetching data: ${response?.status} -> ${response.statusText}`
+          `Error fetching data: ${response?.status} -> ${parsedData.message}`
         );
       }
 

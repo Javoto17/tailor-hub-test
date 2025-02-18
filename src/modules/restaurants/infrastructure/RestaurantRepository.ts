@@ -70,5 +70,23 @@ export const generateRestaurantsRepository = (
 
       return data;
     },
+    createRestaurant: async (restaurant) => {
+      try {
+        const { data } = await clientRepository.post<Restaurant>(
+          API_URL + `restaurant/create`,
+          restaurant,
+          {
+            headers: {
+              'Content-Type': 'multipart/form-data',
+            },
+          }
+        );
+
+        return data;
+      } catch (error) {
+        console.log(error);
+        throw error;
+      }
+    },
   };
 };
