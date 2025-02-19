@@ -59,8 +59,8 @@ const RestaurantCard: React.FC<RestaurantCardProps> = ({
             className="absolute w-full h-full"
           />
         </View>
-        <View className="flex-1 flex-row gap-x-2 py-2 relative h-full">
-          <View className="basis-10/12 py-2 px-2 gap-y-1">
+        <View className="flex-1 flex-row gap-x-2 py-2 relative h-full min-h-16">
+          <View className="basis-10/12 gap-y-1 h-auto pl-2">
             <Text className={name()}>{restaurant.name}</Text>
             <Text className={address()} numberOfLines={2}>
               {restaurant.address}
@@ -72,7 +72,7 @@ const RestaurantCard: React.FC<RestaurantCardProps> = ({
               </Text>
             </View>
           </View>
-          <View className="basis-2/12">
+          <View className="basis-2/12 pr-4 items-end justify-start">
             <TouchableOpacity onPress={onPressFavorite}>
               <HearthIcon filled={restaurant?.isFavorite} />
             </TouchableOpacity>
