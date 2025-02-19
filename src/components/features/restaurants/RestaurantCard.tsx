@@ -1,11 +1,11 @@
 import React from 'react';
 import { Image, Text, TouchableOpacity, View } from 'react-native';
 
+import { tv, VariantProps } from '@/lib/tv';
 import { Restaurant } from '@/modules/restaurants/domain/Restaurant';
 
 import HearthIcon from '../shared/HearthIcon';
 import Rating from '../shared/Rating';
-import { tv, VariantProps } from '@/lib/tv';
 
 const restaurantCardVariants = tv({
   slots: {
@@ -17,7 +17,7 @@ const restaurantCardVariants = tv({
   variants: {
     variant: {
       map: {
-        container: 'bg-white rounded-2xl p-4 basis-1/3',
+        container: 'bg-white rounded-2xl px-2 py-2 h-full',
       },
       list: {
         container: '',
@@ -59,10 +59,10 @@ const RestaurantCard: React.FC<RestaurantCardProps> = ({
             className="absolute w-full h-full"
           />
         </View>
-        <View className="flex-1 flex-row gap-x-2">
-          <View className="flex-1 py-2 px-2 gap-y-1">
+        <View className="flex-1 flex-row gap-x-2 py-2 relative h-full">
+          <View className="basis-10/12 py-2 px-2 gap-y-1">
             <Text className={name()}>{restaurant.name}</Text>
-            <Text className={address()} numberOfLines={3}>
+            <Text className={address()} numberOfLines={2}>
               {restaurant.address}
             </Text>
             <View className="flex flex-row gap-x-2 items-end">
@@ -72,7 +72,7 @@ const RestaurantCard: React.FC<RestaurantCardProps> = ({
               </Text>
             </View>
           </View>
-          <View className="px-2">
+          <View className="basis-2/12">
             <TouchableOpacity onPress={onPressFavorite}>
               <HearthIcon filled={restaurant?.isFavorite} />
             </TouchableOpacity>
