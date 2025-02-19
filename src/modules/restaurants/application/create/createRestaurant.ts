@@ -18,11 +18,7 @@ export const createRestaurant =
 
     const formData = new FormData();
 
-    const latlng = {
-      lat: Number(location?.latitude),
-      lng: Number(location?.longitude),
-    };
-
+    // Server have to parse the latlng as a json object
     formData.append('name', name);
     formData.append('address', address);
     formData.append('description', description);
@@ -31,8 +27,13 @@ export const createRestaurant =
       type: 'image/jpeg',
       uri: image,
     });
-    formData.append('latlng[lat]', latlng.lat.toString());
-    formData.append('latlng[lng]', latlng.lng.toString());
+    formData.append(
+      'latlng',
+      JSON.stringify({ lat: location.latitude, lng: location.longitude })
+    );
+
+    // formData.append('latlng[lat]', location.latitude.toString());
+    // formData.append('latlng[lng]', location.longitude.toString());
 
     await restaurantsRepository.createRestaurant(formData);
   };

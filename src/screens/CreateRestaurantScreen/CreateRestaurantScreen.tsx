@@ -2,26 +2,33 @@ import React from 'react';
 import { TouchableOpacity, View } from 'react-native';
 
 import RestaurantForm, {
-  RestaurantFormData,
+  RestaurantFormSubmitData,
 } from '@/components/features/restaurantCreate/RestaurantForm';
 import Layout from '@/components/features/shared/Layout';
 import LogoIcon from '@/components/features/shared/LogoIcon';
 import ArrowIcon from '@/components/features/shared/ArrowIcon';
 
 import { CreateRestaurantScreenProps } from '@/components/features/navigation/Navigation';
-import { useManageRestaurant } from '@/hooks/restaurants/useManageRestaurant';
+import { useCreateRestaurant } from '@/hooks/restaurants/useCreateRestaurant';
 
 const CreateRestaurantScreen: React.FC<CreateRestaurantScreenProps> = ({
   navigation,
 }) => {
-  const { createRestaurantUser } = useManageRestaurant();
+  const { createRestaurantUser } = useCreateRestaurant();
 
   const handlePress = () => {
     navigation.goBack();
   };
 
-  const handleSubmit = (data: RestaurantFormData) => {
-    createRestaurantUser(data);
+  const handleSubmit = (data: RestaurantFormSubmitData) => {
+    if (!data.location) {
+      return;
+    }
+
+    return createRestaurantUser({
+      ...data,
+      location: data.location,
+    });
   };
 
   return (

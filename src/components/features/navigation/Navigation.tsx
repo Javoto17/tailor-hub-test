@@ -35,6 +35,8 @@ export type TabParamList = {
   Restaurants: undefined;
   Favorites: undefined;
   Profile: undefined;
+  RestaurantCreate: undefined;
+  RestaurantDetail: { id: string };
 };
 
 const Stack = createNativeStackNavigator<MainStackParamList>();

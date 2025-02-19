@@ -8,6 +8,8 @@ import {
   Text,
   TouchableOpacity,
   TextInput,
+  NativeSyntheticEvent,
+  TextInputFocusEventData,
 } from 'react-native';
 import debounce from 'just-debounce-it';
 import PlusIcon from '../shared/PlusIcon';
@@ -30,10 +32,11 @@ export interface TextFieldGoogleProps extends Omit<TextFieldProps, 'onPress'> {
     region: string;
     locale: string;
   };
+  onCancel: () => void;
 }
 
 const TextFieldGoogle = React.forwardRef<TextInput, TextFieldGoogleProps>(
-  ({ onPress, query, ...props }, ref) => {
+  ({ onPress, query, onCancel, onBlur, ...props }, ref) => {
     const [inputValue, setInputValue] = useState('');
     const [predictions, setPredictions] = useState<Prediction[]>([]);
 
@@ -106,6 +109,18 @@ const TextFieldGoogle = React.forwardRef<TextInput, TextFieldGoogleProps>(
     const handlePressRightIcon = () => {
       setInputValue('');
       setPredictions([]);
+
+      if (typeof onCancel === 'function') {
+        onCancel();
+      }
+    };
+
+    const handleBlur = (e: NativeSyntheticEvent<TextInputFocusEventData>) => {
+      setPredictions([]);
+
+      if (typeof onBlur === 'function') {
+        onBlur(e);
+      }
     };
 
     return (
@@ -115,6 +130,7 @@ const TextFieldGoogle = React.forwardRef<TextInput, TextFieldGoogleProps>(
           ref={ref}
           onChangeText={handleInputChange}
           value={inputValue}
+          onBlur={handleBlur}
           rightIcon={
             inputValue?.length > 0 && (
               <TouchableOpacity onPress={handlePressRightIcon}>

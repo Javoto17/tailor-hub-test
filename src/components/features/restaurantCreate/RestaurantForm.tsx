@@ -20,21 +20,29 @@ import TextFieldGoogle from './TextFieldGoogle';
 export interface RestaurantFormData {
   name: string;
   address: string;
-  location: {
+  location?: {
     latitude: number;
     longitude: number;
-  } | null;
+  };
   description: string;
   image: string;
 }
 
+export interface RestaurantFormSubmitData extends RestaurantFormData {
+  location: {
+    latitude: number;
+    longitude: number;
+  };
+}
+
 interface RestaurantFormProps {
-  onSubmit: (data: RestaurantFormData) => void;
+  onSubmit: (data: RestaurantFormSubmitData) => void;
 }
 
 const RestaurantForm = ({ onSubmit }: RestaurantFormProps) => {
-  const { control, setValue, handleSubmit, formState, getValues } =
+  const { control, setValue, handleSubmit, formState, getValues, setError } =
     useForm<RestaurantFormData>({
+      mode: 'onBlur',
       defaultValues: {
         address: '',
         description: '',
@@ -44,7 +52,7 @@ const RestaurantForm = ({ onSubmit }: RestaurantFormProps) => {
     });
   const watchImage = useWatch({ control, name: 'image' });
 
-  const { isSubmitting, isValid } = formState;
+  const { isSubmitting, isValid, errors } = formState;
 
   const handleImagePicker = async () => {
     const result = await launchImageLibrary({
@@ -70,8 +78,23 @@ const RestaurantForm = ({ onSubmit }: RestaurantFormProps) => {
     }
   };
 
+  const handleCancel = () => {
+    setValue('address', '');
+    setValue('location', undefined);
+  };
+
   const thisOnSubmit = (data: RestaurantFormData) => {
-    onSubmit(data);
+    if (!data.image) {
+      setError('image', { message: 'La imagen es requerida' });
+      return;
+    }
+
+    if (!data.location || !data?.address) {
+      setError('location', { message: 'La ubicación es requerida' });
+      return;
+    }
+
+    return onSubmit(data as RestaurantFormSubmitData);
   };
 
   return (
@@ -111,11 +134,17 @@ const RestaurantForm = ({ onSubmit }: RestaurantFormProps) => {
                 )}
               </View>
             </TouchableWithoutFeedback>
+            <Text className="text-red-500 font-roobert text-caption -mt-2">
+              {errors?.image?.message}
+            </Text>
           </View>
           <View className="flex flex-col gap-y-4">
             <Controller
               control={control}
               name="name"
+              rules={{
+                required: { value: true, message: 'El nombre es requerido' },
+              }}
               render={({ field: { onChange, onBlur, value } }) => (
                 <TextField
                   variant="primary"
@@ -124,10 +153,14 @@ const RestaurantForm = ({ onSubmit }: RestaurantFormProps) => {
                   onChangeText={onChange}
                   onBlur={onBlur}
                   value={value}
+                  error={
+                    errors?.name?.message
+                      ? { message: errors?.name?.message }
+                      : undefined
+                  }
                 />
               )}
             />
-
             <TextFieldGoogle
               variant="primary"
               placeholder="Dirección"
@@ -136,11 +169,35 @@ const RestaurantForm = ({ onSubmit }: RestaurantFormProps) => {
                 setValue('location', location);
                 setValue('address', prediction?.description ?? '');
               }}
+              onCancel={handleCancel}
+              onBlur={() => {
+                const address = getValues('address');
+                const location = getValues('location');
+
+                if (!address || !location) {
+                  setError('address', { message: 'La dirección es requerida' });
+                }
+              }}
+              error={
+                errors?.address?.message
+                  ? { message: errors?.address?.message }
+                  : undefined
+              }
             />
 
             <Controller
               control={control}
               name="description"
+              rules={{
+                required: {
+                  value: true,
+                  message: 'La descripción es requerida',
+                },
+                minLength: {
+                  value: 10,
+                  message: 'La descripción debe tener al menos 10 caracteres',
+                },
+              }}
               render={({ field: { onChange, onBlur, value } }) => (
                 <TextField
                   variant="primary"
@@ -150,6 +207,11 @@ const RestaurantForm = ({ onSubmit }: RestaurantFormProps) => {
                   onBlur={onBlur}
                   value={value}
                   multiline={true}
+                  error={
+                    errors?.description?.message
+                      ? { message: errors?.description?.message }
+                      : undefined
+                  }
                 />
               )}
             />

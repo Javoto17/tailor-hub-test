@@ -32,7 +32,7 @@ export const generateRestaurantsRepository = (
         return data.restaurantList;
       } catch (error) {
         console.log(error);
-        return [];
+        throw error;
       }
     },
     getRestaurantsPagination: async (

@@ -5,9 +5,10 @@ import { tv, VariantProps } from '@/lib/tv';
 
 const textFieldVariants = tv({
   slots: {
-    wrapper: 'flex flex-row border border-black rounded-[32px] relative',
+    wrapper: 'flex flex-col border border-black rounded-[32px] relative',
     label: 'font-roobert-semi text-body mb-2 font-semibold',
     input: 'font-roobert text-body min-h-11 py-3 px-4 w-full',
+    error: 'text-red-500 font-roobert text-caption pl-4 mt-2',
   },
   variants: {
     variant: {
@@ -50,6 +51,9 @@ export interface TextFieldProps
     Omit<TextFieldVariants, 'rightIcon'> {
   label?: string;
   rightIcon?: React.ReactNode;
+  error?: {
+    message: string;
+  };
 }
 
 const TextField = React.forwardRef<TextInput, TextFieldProps>(
@@ -62,6 +66,7 @@ const TextField = React.forwardRef<TextInput, TextFieldProps>(
       label,
       size = 'large',
       rightIcon,
+      error,
       ...props
     },
     ref
@@ -79,6 +84,7 @@ const TextField = React.forwardRef<TextInput, TextFieldProps>(
       wrapper,
       label: tvLabel,
       input,
+      error: errorMessage,
     } = textFieldVariants({ variant, size, rightIcon: !!rightIcon });
 
     return (
@@ -97,6 +103,8 @@ const TextField = React.forwardRef<TextInput, TextFieldProps>(
             {React.isValidElement(rightIcon) && rightIcon}
           </View>
         </View>
+
+        {error && <Text className={errorMessage()}>{error?.message}</Text>}
       </View>
     );
   }

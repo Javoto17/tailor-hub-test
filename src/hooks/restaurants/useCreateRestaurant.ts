@@ -13,29 +13,17 @@ const clientRepository = generateClientRepository(storageRepository);
 
 const restaurantRepository = generateRestaurantsRepository(clientRepository);
 
-export function useManageRestaurant() {
+export function useCreateRestaurant() {
   const createRestaurantMutation = useMutation({
     mutationFn: async (formData: CreateRestaurantParams) => {
       return await createRestaurant(restaurantRepository)(formData);
     },
   });
 
-  //   const updateRestaurantMutation = useMutation({
-  //     mutationFn: ({ id, name, location, cuisine }: updateRestaurantParams) =>
-  //       updateRestaurant(restaurantRepository)(id, name, location, cuisine),
-  //     onSuccess: () => {
-  //       // Handle success (e.g., refetch restaurants)
-  //     },
-  //   });
-
-  //   const deleteRestaurantMutation = useMutation({
-  //     mutationFn: (id: string) => deleteRestaurant(restaurantRepository)(id),
-  //     onSuccess: () => {
-  //       // Handle success (e.g., refetch restaurants)
-  //     },
-  //   });
-
   return {
     createRestaurantUser: createRestaurantMutation.mutateAsync,
+    isCreatingRestaurant: createRestaurantMutation.isPending,
+    isCreatingRestaurantError: createRestaurantMutation.isError,
+    isCreatingRestaurantSuccess: createRestaurantMutation.isSuccess,
   };
 }
