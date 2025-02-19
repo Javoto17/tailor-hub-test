@@ -16,4 +16,15 @@ export interface Restaurant {
   };
 }
 
+export interface RestaurantCreate {
+  name: string;
+  address: string;
+  description: string;
+  file: File;
+  latLng: {
+    lat: number;
+    lng: number;
+  };
+}
+
 export type RestaurantDetail = Restaurant & {};

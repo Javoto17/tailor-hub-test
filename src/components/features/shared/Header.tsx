@@ -4,8 +4,9 @@ import { Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { NativeStackHeaderProps } from '@react-navigation/native-stack';
+import { BottomTabHeaderProps } from '@react-navigation/bottom-tabs';
 
-interface HeaderProps extends NativeStackHeaderProps {}
+type HeaderProps = NativeStackHeaderProps | BottomTabHeaderProps;
 
 const Header: React.FC<HeaderProps> = (props) => {
   const { options, navigation } = props ?? {};

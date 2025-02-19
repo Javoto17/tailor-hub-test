@@ -1,6 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { TouchableOpacity, View } from 'react-native';
-
 import { RestaurantsScreenProps } from '@/components/features/navigation/Navigation';
 import RestaurantsList, {
   RestaurantsListRef,
@@ -10,6 +9,8 @@ import Layout from '@/components/features/shared/Layout';
 import ListIcon from '@/components/features/shared/ListIcon';
 import MapIcon from '@/components/features/shared/MapIcon';
 import { useGetRestaurantsPagination } from '@/hooks/restaurants/useGetRestaurantsPagination';
+import FloatIcon from '@/components/features/shared/FloatIcon';
+import PlusIcon from '@/components/features/shared/PlusIcon';
 
 enum RestaurantsScreenType {
   LIST = 'LIST',
@@ -105,17 +106,26 @@ const RestaurantsScreen: React.FC<RestaurantsScreenProps> = ({
     return undefined;
   }, [isLoadingError, data?.length, isLoading]);
 
+  const handlePress = () => {
+    navigation.navigate('RestaurantCreate');
+  };
+
   return (
     <Layout withHeader withTabs>
       {screenType === RestaurantsScreenType.LIST && (
-        <RestaurantsList
-          data={data ?? []}
-          ref={refList}
-          isLoading={isLoading}
-          onPressItem={onPressItem}
-          onEndReached={data && data?.length > 0 ? onEndReached : undefined}
-          emptyText={getEmptyText()}
-        />
+        <>
+          <RestaurantsList
+            data={data ?? []}
+            ref={refList}
+            isLoading={isLoading}
+            onPressItem={onPressItem}
+            onEndReached={data && data?.length > 0 ? onEndReached : undefined}
+            emptyText={getEmptyText()}
+          />
+          <FloatIcon position="bottomRight" onPress={handlePress}>
+            <PlusIcon className="text-white" width={32} height={32} />
+          </FloatIcon>
+        </>
       )}
 
       {screenType === RestaurantsScreenType.MAP && (

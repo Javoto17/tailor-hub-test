@@ -7,6 +7,7 @@ interface GetRestaurantsParams {
 
 export interface RestaurantRepository {
   getRestaurantById: (id: string) => Promise<RestaurantDetail>;
+  createRestaurant: (restaurant: FormData) => Promise<Restaurant>;
   getRestaurantsPagination: (params: GetRestaurantsParams) => Promise<{
     page: number;
     limit: number;

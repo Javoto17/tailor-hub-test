@@ -32,6 +32,7 @@ const buttonVariants = tv({
       },
       large: {
         button: 'py-4 px-10 rounded-[32px]',
+        label: 'text-body',
       },
       full: {
         button: 'py-4 px-10 rounded-[32px] w-full',
