@@ -84,7 +84,11 @@ android {
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
         versionName "1.0"
+        manifestPlaceholders = [
+            GOOGLE_PLACES_API_KEY: System.getenv("GOOGLE_PLACES_API_KEY") ?: "default_value"
+        ]
     }
+
     signingConfigs {
         debug {
             storeFile file('debug.keystore')

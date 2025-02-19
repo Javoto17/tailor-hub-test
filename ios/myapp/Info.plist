@@ -53,6 +53,10 @@
 			<string>Roobert-SemiBold.ttf</string>
 			<string>Roobert-Regular.ttf</string>
 		</array>
+		<key>NSLocationWhenInUseUsageDescription</key>
+		<string>We need your location to show nearby points of interest.</string>
+		<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+		<string>We need your location to continuously provide location-based services.</string>
 		<key>NSPhotoLibraryUsageDescription</key>
 		<string>This app requires access to your photo library to upload images.</string>
 	</dict>

@@ -103,6 +103,13 @@ const Button: React.FC<ButtonProps> = ({
     size,
   });
 
+  const renderChildren = () => {
+    if (children) return children;
+    if (label) return <Text className={tvLabel()}>{label}</Text>;
+    if (icon)
+      return <Ionicons name={icon.name} size={icon.size} color={icon.color} />;
+    return null;
+  };
   return (
     <TouchableOpacity
       {...props}
@@ -111,13 +118,7 @@ const Button: React.FC<ButtonProps> = ({
         className,
       })}
     >
-      {children ? (
-        children
-      ) : label ? (
-        <Text className={tvLabel()}>{label}</Text>
-      ) : icon ? (
-        <Ionicons name={icon.name} size={icon.size} color={icon.color} />
-      ) : null}
+      {renderChildren()}
     </TouchableOpacity>
   );
 };

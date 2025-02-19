@@ -1,11 +1,10 @@
-import { TouchableWithoutFeedback, View, Text } from 'react-native';
-
 import React from 'react';
+import { Controller, useForm } from 'react-hook-form';
+import { Text, TouchableWithoutFeedback, View } from 'react-native';
 
 import Button from '../shared/Button';
+import Spinner from '../shared/Spinner';
 import TextField from '../shared/TextField';
-
-import { useForm, Controller } from 'react-hook-form';
 
 export interface FormLoginProps {
   onPressLink: () => void;
@@ -18,12 +17,14 @@ export type FormLoginData = {
 };
 
 const FormLogin = ({ onPressLink, onSubmit }: FormLoginProps) => {
-  const { handleSubmit, control } = useForm<FormLoginData>({
+  const { handleSubmit, control, formState } = useForm<FormLoginData>({
     defaultValues: {
       email: '',
       password: '',
     },
   });
+
+  const { errors, isSubmitting } = formState;
 
   const thisOnSubmit = (data: FormLoginData) => {
     onSubmit(data);
@@ -36,6 +37,13 @@ const FormLogin = ({ onPressLink, onSubmit }: FormLoginProps) => {
           <Controller
             control={control}
             name="email"
+            rules={{
+              required: 'Email es requerido',
+              pattern: {
+                value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                message: 'Email no válido',
+              },
+            }}
             render={({ field: { onChange, onBlur, value } }) => (
               <TextField
                 placeholder="Introduce tu email"
@@ -48,6 +56,11 @@ const FormLogin = ({ onPressLink, onSubmit }: FormLoginProps) => {
                 keyboardType="email-address"
                 autoCorrect={false}
                 autoComplete="email"
+                error={
+                  errors.email?.message
+                    ? { message: errors.email?.message }
+                    : undefined
+                }
               />
             )}
           />
@@ -56,6 +69,13 @@ const FormLogin = ({ onPressLink, onSubmit }: FormLoginProps) => {
           <Controller
             control={control}
             name="password"
+            rules={{
+              required: 'Contraseña es requerida',
+              minLength: {
+                value: 6,
+                message: 'La contraseña debe tener al menos 6 caracteres',
+              },
+            }}
             render={({ field: { onChange, onBlur, value } }) => (
               <TextField
                 placeholder="Introduce tu contraseña"
@@ -64,16 +84,24 @@ const FormLogin = ({ onPressLink, onSubmit }: FormLoginProps) => {
                 onBlur={onBlur}
                 value={value}
                 secureTextEntry={true}
+                error={
+                  errors.password?.message
+                    ? { message: errors.password?.message }
+                    : undefined
+                }
               />
             )}
           />
         </View>
         <Button
           variant="filled"
-          label="Iniciar sesión"
+          label={isSubmitting ? undefined : 'Iniciar sesión'}
           size="full"
+          disabled={isSubmitting}
           onPress={handleSubmit(thisOnSubmit)}
-        />
+        >
+          {isSubmitting && <Spinner className="text-black" size="small" />}
+        </Button>
         <View className="flex flex-row items-center justify-center gap-x-2">
           <Text className="text-body-small text-white">
             ¿No tienes una cuenta?

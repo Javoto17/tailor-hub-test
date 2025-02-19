@@ -21,19 +21,21 @@ const Header: React.FC<HeaderProps> = (props) => {
     >
       <View className="flex h-16 flex-row gap-x-1">
         <View className="flex basis-8/12 flex-col px-2 justify-center">
-          <Text className="text-body font-semibold text-dark">{title}</Text>
+          <Text className="text-body font-semibold text-black">{title}</Text>
         </View>
-        <View className="flex basis-2/12 items-end justify-center">
-          {headerLeft &&
-            headerLeft({
-              canGoBack: navigation?.canGoBack(),
-            })}
-        </View>
-        <View className="flex basis-3/12 items-end justify-center">
-          {headerRight &&
-            headerRight({
-              canGoBack: navigation?.canGoBack(),
-            })}
+        <View className="flex-1 flex items-center justify-end flex-row gap-x-4 px-2">
+          <View>
+            {headerLeft &&
+              headerLeft({
+                canGoBack: navigation?.canGoBack(),
+              })}
+          </View>
+          <View>
+            {headerRight &&
+              headerRight({
+                canGoBack: navigation?.canGoBack(),
+              })}
+          </View>
         </View>
       </View>
     </View>

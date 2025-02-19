@@ -5,9 +5,9 @@ import { tv, VariantProps } from '@/lib/tv';
 
 const textFieldVariants = tv({
   slots: {
-    wrapper: 'flex flex-col border border-black rounded-[32px] relative',
+    wrapper: 'flex flex-row border border-black rounded-[32px] relative',
     label: 'font-roobert-semi text-body mb-2 font-semibold',
-    input: 'font-roobert text-body min-h-11 py-3 px-4 w-full',
+    input: 'font-roobert text-body min-h-11 py-3 px-4 basis-full',
     error: 'text-red-500 font-roobert text-caption pl-4 mt-2',
   },
   variants: {
