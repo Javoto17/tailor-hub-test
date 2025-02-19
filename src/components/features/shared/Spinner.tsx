@@ -3,12 +3,16 @@ import { ActivityIndicator, View } from 'react-native';
 
 interface SpinnerProps {
   className?: string;
+  size?: 'small' | 'large';
 }
 
-const Spinner = ({ className = 'text-primary' }: SpinnerProps) => {
+const Spinner = ({
+  className = 'text-primary',
+  size = 'large',
+}: SpinnerProps) => {
   return (
     <View className="flex-1 justify-center items-center">
-      <ActivityIndicator size="large" className={className} />
+      <ActivityIndicator size={size} className={className} />
     </View>
   );
 };

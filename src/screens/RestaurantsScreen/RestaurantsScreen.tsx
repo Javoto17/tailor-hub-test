@@ -1,11 +1,12 @@
 import React, { useCallback, useEffect, useRef } from 'react';
-
 import { RestaurantsScreenProps } from '@/components/features/navigation/Navigation';
 import RestaurantsList, {
   RestaurantsListRef,
 } from '@/components/features/restaurants/RestaurantsList';
 import Layout from '@/components/features/shared/Layout';
 import { useGetRestaurantsPagination } from '@/hooks/restaurants/useGetRestaurantsPagination';
+import FloatIcon from '@/components/features/shared/FloatIcon';
+import PlusIcon from '@/components/features/shared/PlusIcon';
 
 const RestaurantsScreen: React.FC<RestaurantsScreenProps> = ({
   navigation,
@@ -50,8 +51,15 @@ const RestaurantsScreen: React.FC<RestaurantsScreenProps> = ({
     return undefined;
   }, [isLoadingError, data?.length, isLoading]);
 
+  const handlePress = () => {
+    navigation.navigate('RestaurantCreate');
+  };
+
   return (
-    <Layout withHeader withTabs>
+    <Layout withHeader withTabs className="relative">
+      <FloatIcon position="bottomRight" onPress={handlePress}>
+        <PlusIcon className="text-white" width={32} height={32} />
+      </FloatIcon>
       <RestaurantsList
         data={data ?? []}
         ref={refList}
