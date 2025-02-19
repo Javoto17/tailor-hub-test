@@ -10,6 +10,10 @@ export interface Restaurant {
   avgRating: number;
   reviews: Review[];
   isFavorite?: boolean;
+  latlng: {
+    lat: number;
+    long: number;
+  };
 }
 
 export type RestaurantDetail = Restaurant & {};

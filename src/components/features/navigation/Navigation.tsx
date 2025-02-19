@@ -8,7 +8,7 @@ import DetailRestaurantScreen from '@/screens/DetailRestaurantScreen/DetailResta
 import FavoritesScreen from '@/screens/FavoritesScreen/FavoritesScreen';
 import HomeScreen from '@/screens/HomeScreen/HomeScreen';
 import LoginScreen from '@/screens/LoginScreen/LoginScreen';
-import ProfileScreen from '@/screens/ProfileScreen/profileScreen';
+import ProfileScreen from '@/screens/ProfileScreen/ProfileScreen';
 import RestaurantsScreen from '@/screens/RestaurantsScreen/RestaurantsScreen';
 
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';

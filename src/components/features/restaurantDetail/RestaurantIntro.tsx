@@ -38,12 +38,12 @@ const RestaurantIntro = ({
           className="w-full h-full"
           resizeMode="cover"
         />
-        <View className="absolute inset-0 justify-center items-center z-10 gap-y-2">
-          <Text className="text-body text-white font-roobert-semi font-bold">
+        <View className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-10 gap-y-2">
+          <Text className="text-body text-white font-roobert-semi font-bold text-center">
             {title}
           </Text>
           <TouchableWithoutFeedback onPress={onPressAddress}>
-            <Text className="text-caption text-white font-roobert">
+            <Text className="text-caption text-white font-roobert text-center">
               {address}
             </Text>
           </TouchableWithoutFeedback>
