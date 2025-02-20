@@ -95,15 +95,20 @@ const FormLogin = ({ onPressLink, onSubmit }: FormLoginProps) => {
             )}
           />
         </View>
-        <Button
-          variant="filled"
-          label={isSubmitting ? undefined : 'Iniciar sesión'}
-          size="full"
-          disabled={isSubmitting}
-          onPress={handleSubmit(thisOnSubmit)}
-        >
-          {isSubmitting && <Spinner className="text-black" size="small" />}
-        </Button>
+        <View className="flex w-full">
+          <Button
+            variant="filled"
+            label={isSubmitting ? undefined : 'Iniciar sesión'}
+            size="full"
+            disabled={isSubmitting}
+            onPress={handleSubmit(thisOnSubmit)}
+            testID="login-button"
+          >
+            {isSubmitting ? (
+              <Spinner className="text-black" size="small" />
+            ) : null}
+          </Button>
+        </View>
         <View className="flex flex-row items-center justify-center gap-x-2">
           <Text className="text-body-small text-white">
             ¿No tienes una cuenta?

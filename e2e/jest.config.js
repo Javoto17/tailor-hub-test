@@ -4,7 +4,7 @@ module.exports = {
   rootDir: '..',
   testMatch: ['<rootDir>/e2e/**/*.test.ts'],
   testTimeout: 120000,
-  maxWorkers: 1,
+  maxWorkers: 5,
   globalSetup: 'detox/runners/jest/globalSetup',
   globalTeardown: 'detox/runners/jest/globalTeardown',
   reporters: ['detox/runners/jest/reporter'],

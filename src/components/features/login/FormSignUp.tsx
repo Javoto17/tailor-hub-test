@@ -173,19 +173,21 @@ const FormSignUp = ({ onPressLink, onSubmit, isLoading }: FormSignUpProps) => {
       </View>
       <View className="items-start justify-start gap-y-4 mt-12">
         {renderStep()}
-        <Button
-          variant="filled"
-          label={
-            isDataStep ? 'Siguiente' : thisIsLoading ? undefined : 'Finalizar'
-          }
-          size="full"
-          onPress={handlePress}
-          testID={isDataStep ? 'signup-next-button' : 'signup-finish-button'}
-        >
-          {!isDataStep && thisIsLoading && (
-            <Spinner className="text-black" size="small" />
-          )}
-        </Button>
+        <View className="flex w-full">
+          <Button
+            variant="filled"
+            label={
+              isDataStep ? 'Siguiente' : thisIsLoading ? undefined : 'Finalizar'
+            }
+            size="full"
+            onPress={handlePress}
+            testID={isDataStep ? 'signup-next-button' : 'signup-finish-button'}
+          >
+            {!isDataStep && thisIsLoading && (
+              <Spinner className="text-black" size="small" />
+            )}
+          </Button>
+        </View>
       </View>
     </>
   );

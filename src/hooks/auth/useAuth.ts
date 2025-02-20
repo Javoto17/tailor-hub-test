@@ -63,6 +63,9 @@ export function useAuth() {
     onSuccess: (data) => {
       loginAction(data);
     },
+    onError: (error) => {
+      console.log('error', error);
+    },
   });
 
   const logoutMutation = useMutation({

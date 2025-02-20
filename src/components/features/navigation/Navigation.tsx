@@ -187,7 +187,10 @@ export const Navigation = () => {
 
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName={isAuthenticated ? 'Tab' : 'Home'}>
+      <Stack.Navigator
+        initialRouteName={isAuthenticated ? 'Tab' : 'Home'}
+        screenOptions={{}}
+      >
         {!isAuthenticated ? (
           <Stack.Group
             screenOptions={{

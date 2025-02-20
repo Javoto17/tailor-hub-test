@@ -40,6 +40,8 @@ const LoginScreen: React.FC<LoginScreenProps> = () => {
       email: data.email,
       password: data.password,
     });
+
+    console.log('loginUser', loginUser);
   };
 
   const renderForm = () => {
@@ -57,7 +59,7 @@ const LoginScreen: React.FC<LoginScreenProps> = () => {
   };
 
   return (
-    <Layout withHeader={false}>
+    <Layout withHeader={false} testID="login-screen">
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         className="flex-1"

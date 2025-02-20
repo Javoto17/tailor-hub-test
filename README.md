@@ -1,97 +1,151 @@
-This is a new [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
+# Aplicación React Native
 
-# Getting Started
+## Estructura del Proyecto
+```
+├── src/
+│   ├── components/
+│   │   ├── features/     # Componentes específicos de funcionalidades
+│   │   └── shared/       # Componentes reutilizables
+│   ├── screens/          # Componentes de pantallas
+│   ├── hooks/            # Hooks personalizados de React
+│   ├── modules/          # Modulos de aplicación, infraestructura y dominio
+```
 
-> **Note**: Make sure you have completed the [Set Up Your Environment](https://reactnative.dev/docs/set-up-your-environment) guide before proceeding.
+## Principales Librerías y Tecnologías
 
-## Step 1: Start Metro
+### Core
+- **React Native**: Framework para aplicaciones móviles
+- **TypeScript**: Para seguridad de tipos y mejor experiencia de desarrollo
+- **NativeWind**: Tailwind CSS para React Native, usado para estilos
+- **React Navigation**: Manejo de navegación en la app
 
-First, you will need to run **Metro**, the JavaScript build tool for React Native.
+### Gestión de Estado y Obtención de Datos
+- **@tanstack/react-query**: Para gestión de estado del servidor y obtención de datos
+- **Zustand**: Solución ligera para gestión de estado
+- **@react-native-async-storage/async-storage**: Para almacenamiento local
 
-To start the Metro dev server, run the following command from the root of your React Native project:
+### Mapas y Localización
+- **react-native-maps**: Para integración de mapas
+- **@react-native-community/geolocation**: Servicios de localización
 
-```sh
-# Using npm
+### Formularios y Validación
+- **react-hook-form**: Manejo de formularios con validación
+
+## Configuración del Entorno
+
+1. Crear un archivo `.env` basado en `.env.example`:
+```bash
+cp .env.example .env
+```
+
+2. Variables de entorno requeridas:
+```
+API_URL=tu_url_api_aquí
+GOOGLE_MAPS_API_KEY=tu_clave_api_google_maps_aquí
+```
+
+### Configuración de Google Maps API
+Necesitas una clave de API de Google Maps con las siguientes APIs habilitadas:
+- Maps SDK para Android
+- Places API
+- Geolocation API
+
+Para obtener tu clave de API:
+1. Ve a [Google Cloud Console](https://console.cloud.google.com/)
+2. Crea un nuevo proyecto o selecciona uno existente
+3. Habilita las APIs requeridas:
+   - Maps SDK para Android
+   - Places API
+   - Geolocation API
+4. Crea credenciales (clave API)
+5. Añade la clave API a tu archivo `.env`
+
+## Desarrollo
+
+### Instalación
+```bash
+# Instalar dependencias
+npm install
+
+# Específico para iOS
+cd ios && pod install && cd ..
+```
+
+### Ejecutar la Aplicación
+```bash
+# Iniciar Metro bundler
 npm start
 
-# OR using Yarn
-yarn start
-```
-
-## Step 2: Build and run your app
-
-With Metro running, open a new terminal window/pane from the root of your React Native project, and use one of the following commands to build and run your Android or iOS app:
-
-### Android
-
-```sh
-# Using npm
-npm run android
-
-# OR using Yarn
-yarn android
-```
-
-### iOS
-
-For iOS, remember to install CocoaPods dependencies (this only needs to be run on first clone or after updating native deps).
-
-The first time you create a new project, run the Ruby bundler to install CocoaPods itself:
-
-```sh
-bundle install
-```
-
-Then, and every time you update your native dependencies, run:
-
-```sh
-bundle exec pod install
-```
-
-For more information, please visit [CocoaPods Getting Started guide](https://guides.cocoapods.org/using/getting-started.html).
-
-```sh
-# Using npm
+# Ejecutar en iOS
 npm run ios
 
-# OR using Yarn
-yarn ios
+# Ejecutar en Android
+npm run android
 ```
 
-If everything is set up correctly, you should see your new app running in the Android Emulator, iOS Simulator, or your connected device.
+### Formateo de Código
+```bash
+# Formatear código con Prettier
+npm run format
+```
 
-This is one way to run your app — you can also build it directly from Android Studio or Xcode.
+## Testing
 
-## Step 3: Modify your app
+### Tests Unitarios
+El proyecto usa Jest y React Native Testing Library para tests unitarios.
 
-Now that you have successfully run the app, let's make changes!
+```bash
+# Ejecutar tests
+npm test
 
-Open `App.tsx` in your text editor of choice and make some changes. When you save, your app will automatically update and reflect these changes — this is powered by [Fast Refresh](https://reactnative.dev/docs/fast-refresh).
+# Ejecutar tests en modo watch
+npm run test:watch
+```
 
-When you want to forcefully reload, for example to reset the state of your app, you can perform a full reload:
+### Tests E2E con Detox
+El proyecto usa Detox para pruebas end-to-end.
 
-- **Android**: Press the <kbd>R</kbd> key twice or select **"Reload"** from the **Dev Menu**, accessed via <kbd>Ctrl</kbd> + <kbd>M</kbd> (Windows/Linux) or <kbd>Cmd ⌘</kbd> + <kbd>M</kbd> (macOS).
-- **iOS**: Press <kbd>R</kbd> in iOS Simulator.
+#### Tests E2E en iOS
+```bash
+# Construir app iOS para testing
+npm run e2e:build:ios
 
-## Congratulations! :tada:
+# Ejecutar tests iOS
+npm run e2e:test:ios
 
-You've successfully run and modified your React Native App. :partying_face:
+# Construir y testear versión de release
+npm run e2e:build:ios:release
+npm run e2e:test:ios:release
+```
 
-### Now what?
+#### Tests E2E en Android
+```bash
+# Construir app Android para testing
+npm run e2e:build:android
 
-- If you want to add this new React Native code to an existing application, check out the [Integration guide](https://reactnative.dev/docs/integration-with-existing-apps).
-- If you're curious to learn more about React Native, check out the [docs](https://reactnative.dev/docs/getting-started).
+# Ejecutar tests Android
+npm run e2e:test:android
 
-# Troubleshooting
+# Construir y testear versión de release
+npm run e2e:build:android:release
+npm run e2e:test:android:release
+```
 
-If you're having issues getting the above steps to work, see the [Troubleshooting](https://reactnative.dev/docs/troubleshooting) page.
+## Características Principales
+- Funcionalidad de login y registro con validación de formularios
+- Integración de mapas con servicios de localización
+- Autocompletado de Google Places para búsqueda de ubicaciones
+- Seguimiento de ubicación en tiempo real
+- Diseño responsive usando NativeWind (Tailwind CSS)
 
-# Learn More
+## Estrategia de Testing
+- **Tests Unitarios**: Pruebas de componentes individuales y hooks
+- **Tests E2E**: Pruebas de flujos completos de usuario como login/registro
+- **Tests de Componentes**: Usando React Native Testing Library para comportamiento de componentes
 
-To learn more about React Native, take a look at the following resources:
-
-- [React Native Website](https://reactnative.dev) - learn more about React Native.
-- [Getting Started](https://reactnative.dev/docs/environment-setup) - an **overview** of React Native and how setup your environment.
-- [Learn the Basics](https://reactnative.dev/docs/getting-started) - a **guided tour** of the React Native **basics**.
-- [Blog](https://reactnative.dev/blog) - read the latest official React Native **Blog** posts.
-- [`@facebook/react-native`](https://github.com/facebook/react-native) - the Open Source; GitHub **repository** for React Native.
+## Contribuir
+1. Haz fork del repositorio
+2. Crea tu rama de funcionalidad (`git checkout -b feature/funcionalidad-asombrosa`)
+3. Haz commit de tus cambios (`git commit -m 'Añadir alguna funcionalidad asombrosa'`)
+4. Haz push a la rama (`git push origin feature/funcionalidad-asombrosa`)
+5. Abre un Pull Request

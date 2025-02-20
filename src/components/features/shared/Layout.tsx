@@ -1,10 +1,10 @@
 import { tv } from '@/lib/tv';
 import { vars } from 'nativewind';
 import React from 'react';
-import { View } from 'react-native';
+import { View, ViewProps } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-interface LayoutProps {
+interface LayoutProps extends ViewProps {
   children: React.ReactNode;
   withHeader?: boolean;
   withTabs?: boolean;
@@ -24,11 +24,13 @@ const Layout: React.FC<LayoutProps> = ({
   withHeader = false,
   withTabs = false,
   className,
+  ...props
 }) => {
   const insets = useSafeAreaInsets();
 
   return (
     <View
+      {...props}
       className={layoutTv({ withHeader, withTabs, className })}
       style={vars({
         '--layout-top': withHeader ? 0 : insets.top,
