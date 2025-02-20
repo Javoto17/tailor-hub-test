@@ -49,11 +49,7 @@ const RestaurantsList = forwardRef<RestaurantsListRef, RestaurantsListProps>(
         return null;
       }
 
-      return (
-        <View className="flex justify-center items-center ">
-          <Spinner className="text-primary" />
-        </View>
-      );
+      return <Spinner className="text-primary" />;
     };
 
     return (
