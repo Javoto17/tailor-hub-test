@@ -18,9 +18,9 @@ import {
 } from '@react-navigation/native-stack';
 
 import Header from '../shared/Header';
-import HearthIcon from '../shared/HearthIcon';
-import MarkerIcon from '../shared/MarkerIcon';
-import ProfileIcon from '../shared/ProfileIcon';
+import HearthIcon from '../shared/icons/HearthIcon';
+import MarkerIcon from '../shared/icons/MarkerIcon';
+import ProfileIcon from '../shared/icons/ProfileIcon';
 
 export type MainStackParamList = {
   Home: undefined;

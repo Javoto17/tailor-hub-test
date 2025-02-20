@@ -1,5 +1,10 @@
 import React from 'react';
-import { TouchableOpacity, TouchableOpacityProps, Text } from 'react-native';
+import {
+  TouchableOpacity,
+  TouchableOpacityProps,
+  Text,
+  View,
+} from 'react-native';
 import { tv, VariantProps } from 'tailwind-variants';
 
 import Ionicons from '@react-native-vector-icons/ionicons';
@@ -112,14 +117,8 @@ const Button: React.FC<ButtonProps> = ({
     return null;
   };
   return (
-    <TouchableOpacity
-      {...props}
-      onPress={onPress}
-      className={button({
-        className,
-      })}
-    >
-      {renderChildren()}
+    <TouchableOpacity {...props} onPress={onPress}>
+      <View className={button({ className })}>{renderChildren()}</View>
     </TouchableOpacity>
   );
 };

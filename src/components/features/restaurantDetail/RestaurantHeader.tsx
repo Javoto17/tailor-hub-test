@@ -23,6 +23,7 @@ const RestaurantHeader: React.FC<RestaurantHeaderProps> = (props) => {
 
   return (
     <View
+      testID="restaurant-header"
       className={wrapperHeader({
         className,
       })}

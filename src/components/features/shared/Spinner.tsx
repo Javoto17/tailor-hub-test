@@ -12,7 +12,7 @@ const Spinner = ({
 }: SpinnerProps) => {
   return (
     <View className="flex-1 justify-center items-center">
-      <ActivityIndicator size={size} className={className} />
+      <ActivityIndicator testID="spinner" size={size} className={className} />
     </View>
   );
 };

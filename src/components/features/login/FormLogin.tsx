@@ -46,6 +46,7 @@ const FormLogin = ({ onPressLink, onSubmit }: FormLoginProps) => {
             }}
             render={({ field: { onChange, onBlur, value } }) => (
               <TextField
+                testID="email-input"
                 placeholder="Introduce tu email"
                 label="Email"
                 onChangeText={onChange}
@@ -78,6 +79,7 @@ const FormLogin = ({ onPressLink, onSubmit }: FormLoginProps) => {
             }}
             render={({ field: { onChange, onBlur, value } }) => (
               <TextField
+                testID="password-input"
                 placeholder="Introduce tu contraseña"
                 label="Contraseña"
                 onChangeText={onChange}

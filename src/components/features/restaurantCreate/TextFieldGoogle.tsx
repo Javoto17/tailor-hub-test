@@ -12,7 +12,7 @@ import {
   TextInputFocusEventData,
 } from 'react-native';
 import debounce from 'just-debounce-it';
-import PlusIcon from '../shared/PlusIcon';
+import PlusIcon from '../shared/icons/PlusIcon';
 
 export interface Prediction {
   description: string;
@@ -134,7 +134,10 @@ const TextFieldGoogle = React.forwardRef<TextInput, TextFieldGoogleProps>(
           multiline={true}
           rightIcon={
             inputValue?.length > 0 && (
-              <TouchableOpacity onPress={handlePressRightIcon}>
+              <TouchableOpacity
+                onPress={handlePressRightIcon}
+                testID="cancel-input"
+              >
                 <View className="flex items-center justify-center">
                   <PlusIcon
                     className="text-primary rotate-45"

@@ -26,17 +26,13 @@ const RestaurantFormComment: React.FC<RestaurantFormCommentProps> = ({
     },
   });
 
-  const thisOnSubmit = (data: FormCommentData) => {
-    onSubmit(data);
-  };
-
   return (
     <View className="p-4 border rounded-2xl border-black items-start gap-y-4">
       <Controller
         control={control}
         name="rating"
         render={({ field: { onChange, value } }) => (
-          <Rating value={value} onRate={onChange} />
+          <Rating testID="rating-input" value={value} onRate={onChange} />
         )}
       />
       <Controller
@@ -44,6 +40,7 @@ const RestaurantFormComment: React.FC<RestaurantFormCommentProps> = ({
         name="comment"
         render={({ field: { onChange, onBlur, value } }) => (
           <TextArea
+            testID="comment-input"
             onBlur={onBlur}
             onChangeText={onChange}
             value={value}
@@ -52,9 +49,10 @@ const RestaurantFormComment: React.FC<RestaurantFormCommentProps> = ({
         )}
       />
       <Button
+        testID="submit-comment-button"
         variant="outline"
         size="small"
-        onPress={handleSubmit(thisOnSubmit)}
+        onPress={handleSubmit(onSubmit)}
         label="Enviar"
       />
     </View>

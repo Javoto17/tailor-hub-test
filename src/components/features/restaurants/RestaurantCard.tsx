@@ -4,7 +4,7 @@ import { Image, Text, TouchableOpacity, View } from 'react-native';
 import { tv, VariantProps } from '@/lib/tv';
 import { Restaurant } from '@/modules/restaurants/domain/Restaurant';
 
-import HearthIcon from '../shared/HearthIcon';
+import HearthIcon from '../shared/icons/HearthIcon';
 import Rating from '../shared/Rating';
 
 const restaurantCardVariants = tv({

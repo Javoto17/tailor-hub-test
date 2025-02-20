@@ -10,7 +10,7 @@ import FormSignUp, {
 import FormWrapper from '@/components/features/login/FormWrapper';
 import { LoginScreenProps } from '@/components/features/navigation/Navigation';
 import Layout from '@/components/features/shared/Layout';
-import TailorIcon from '@/components/features/shared/TailorIcon';
+import TailorIcon from '@/components/features/shared/icons/TailorIcon';
 import { useAuth } from '@/hooks/auth/useAuth';
 
 enum LoginForm {

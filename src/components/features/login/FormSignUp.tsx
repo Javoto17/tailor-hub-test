@@ -3,7 +3,7 @@ import { View } from 'react-native';
 import React, { useState } from 'react';
 
 import Button from '../shared/Button';
-import ArrowIcon from '../shared/ArrowIcon';
+import ArrowIcon from '../shared/icons/ArrowIcon';
 import TextField from '../shared/TextField';
 
 import { useForm, Controller } from 'react-hook-form';
@@ -80,6 +80,7 @@ const FormSignUp = ({ onPressLink, onSubmit, isLoading }: FormSignUpProps) => {
             }}
             render={({ field: { onChange, onBlur, value } }) => (
               <TextField
+                testID="signup-email-input"
                 placeholder="Añade tu email"
                 label="Email"
                 onChangeText={onChange}
@@ -106,6 +107,7 @@ const FormSignUp = ({ onPressLink, onSubmit, isLoading }: FormSignUpProps) => {
             }}
             render={({ field: { onChange, onBlur, value } }) => (
               <TextField
+                testID="signup-name-input"
                 placeholder="Añade tu nombre"
                 label="Nombre de usuario"
                 onChangeText={onChange}
@@ -136,6 +138,7 @@ const FormSignUp = ({ onPressLink, onSubmit, isLoading }: FormSignUpProps) => {
         }}
         render={({ field: { onChange, onBlur, value } }) => (
           <TextField
+            testID="signup-password-input"
             onChangeText={onChange}
             onBlur={onBlur}
             value={value}
@@ -157,6 +160,7 @@ const FormSignUp = ({ onPressLink, onSubmit, isLoading }: FormSignUpProps) => {
     <>
       <View className="items-start justify-start flex flex-row">
         <Button
+          testID="back-button"
           variant="outline"
           color="secondary"
           size="large"
@@ -176,6 +180,7 @@ const FormSignUp = ({ onPressLink, onSubmit, isLoading }: FormSignUpProps) => {
           }
           size="full"
           onPress={handlePress}
+          testID={isDataStep ? 'signup-next-button' : 'signup-finish-button'}
         >
           {!isDataStep && thisIsLoading && (
             <Spinner className="text-black" size="small" />

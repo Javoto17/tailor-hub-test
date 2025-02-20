@@ -6,11 +6,11 @@ import RestaurantsList, {
   RestaurantsListRef,
 } from '@/components/features/restaurants/RestaurantsList';
 import RestaurantsMap from '@/components/features/restaurants/RestaurantsMap';
-import FloatIcon from '@/components/features/shared/FloatIcon';
+import FloatIcon from '@/components/features/shared/icons/FloatIcon';
 import Layout from '@/components/features/shared/Layout';
-import ListIcon from '@/components/features/shared/ListIcon';
-import MapIcon from '@/components/features/shared/MapIcon';
-import PlusIcon from '@/components/features/shared/PlusIcon';
+import ListIcon from '@/components/features/shared/icons/ListIcon';
+import MapIcon from '@/components/features/shared/icons/MapIcon';
+import PlusIcon from '@/components/features/shared/icons/PlusIcon';
 import { useGetRestaurants } from '@/hooks/restaurants/useGetRestaurants';
 
 enum RestaurantsScreenType {

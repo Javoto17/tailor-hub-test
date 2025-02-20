@@ -24,7 +24,7 @@ const ButtonIcon: React.FC<ButtonIconProps> = ({
       {children ? (
         children
       ) : icon ? (
-        <Ionicons {...props} name={icon} size={24} />
+        <Ionicons {...props} name={icon} size={24} testID={`${icon}-icon`} />
       ) : null}
     </TouchableOpacity>
   );

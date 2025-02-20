@@ -10,7 +10,7 @@ import Animated, {
 import { HomeScreenProps } from '@/components/features/navigation/Navigation';
 import Button from '@/components/features/shared/Button';
 import Layout from '@/components/features/shared/Layout';
-import TailorIcon from '@/components/features/shared/TailorIcon';
+import TailorIcon from '@/components/features/shared/icons/TailorIcon';
 import { useAuth } from '@/hooks/auth/useAuth';
 
 const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {

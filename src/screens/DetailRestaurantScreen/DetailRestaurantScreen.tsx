@@ -10,11 +10,11 @@ import RestaurantFormComment, {
 } from '@/components/features/restaurantDetail/RestaurantFormComment';
 import RestaurantHeader from '@/components/features/restaurantDetail/RestaurantHeader';
 import RestaurantIntro from '@/components/features/restaurantDetail/RestaurantIntro';
-import ArrowIcon from '@/components/features/shared/ArrowIcon';
+import ArrowIcon from '@/components/features/shared/icons/ArrowIcon';
 import Button from '@/components/features/shared/Button';
 import ButtonIcon from '@/components/features/shared/ButtonIcon';
-import EditIcon from '@/components/features/shared/EditIcon';
-import HearthIcon from '@/components/features/shared/HearthIcon';
+import EditIcon from '@/components/features/shared/icons/EditIcon';
+import HearthIcon from '@/components/features/shared/icons/HearthIcon';
 import Layout from '@/components/features/shared/Layout';
 import Spinner from '@/components/features/shared/Spinner';
 

@@ -36,13 +36,14 @@ const RestaurantComment = ({
           </Text>
           {owner && (
             <Button
+              testID="delete-comment-button"
               icon={{ name: 'trash', size: 16 }}
               onPress={() => onDelete(comment._id)}
             />
           )}
         </View>
         <View className="justify-center items-end">
-          <Rating value={comment.rating} />
+          <Rating testID="comment-rating" value={comment.rating} />
         </View>
       </View>
       <View>

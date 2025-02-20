@@ -14,7 +14,7 @@ import { launchImageLibrary } from 'react-native-image-picker';
 import { Restaurant } from '@/modules/restaurants/domain/Restaurant';
 
 import Button from '../shared/Button';
-import PlusIcon from '../shared/PlusIcon';
+import PlusIcon from '../shared/icons/PlusIcon';
 import Spinner from '../shared/Spinner';
 import TextField from '../shared/TextField';
 import TextFieldGoogle from './TextFieldGoogle';

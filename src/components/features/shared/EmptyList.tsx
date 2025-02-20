@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text } from 'react-native';
 
 interface EmptyListProps {
   text: string;
@@ -7,23 +7,13 @@ interface EmptyListProps {
 
 const EmptyList: React.FC<EmptyListProps> = ({ text }) => {
   return (
-    <View style={styles.container}>
-      <Text style={styles.text}>{text}</Text>
+    <View
+      className="flex-1 flex-grow items-center justify-center"
+      testID="empty-list"
+    >
+      <Text className="text-caption text-secondary">{text}</Text>
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    flexGrow: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  text: {
-    fontSize: 16,
-    color: '#ccc',
-  },
-});
 
 export default EmptyList;

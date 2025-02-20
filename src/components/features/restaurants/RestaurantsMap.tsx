@@ -47,7 +47,10 @@ const RestaurantsMap = ({ data, onPressItem }: RestaurantsListProps) => {
     const getLocation = async () => {
       const currentLocation = await getCurrentLocation();
 
-      if (mapRef?.current && currentLocation) {
+      if (
+        typeof mapRef.current?.animateToRegion === 'function' &&
+        currentLocation
+      ) {
         mapRef.current.animateToRegion({
           latitude: Number(currentLocation?.latitude),
           longitude: Number(currentLocation?.longitude),
@@ -71,7 +74,10 @@ const RestaurantsMap = ({ data, onPressItem }: RestaurantsListProps) => {
   }, []);
 
   const onSlide = (index: number) => {
-    if (mapRef?.current && data?.[index]?.latlng) {
+    if (
+      typeof mapRef.current?.animateToRegion === 'function' &&
+      data?.[index]?.latlng
+    ) {
       mapRef.current.animateToRegion({
         latitude: data[index].latlng.lat,
         longitude: data[index].latlng.long,

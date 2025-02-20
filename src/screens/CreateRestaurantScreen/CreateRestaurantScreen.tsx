@@ -5,8 +5,8 @@ import RestaurantForm, {
   RestaurantFormSubmitData,
 } from '@/components/features/restaurantCreate/RestaurantForm';
 import Layout from '@/components/features/shared/Layout';
-import LogoIcon from '@/components/features/shared/LogoIcon';
-import ArrowIcon from '@/components/features/shared/ArrowIcon';
+import LogoIcon from '@/components/features/shared/icons/LogoIcon';
+import ArrowIcon from '@/components/features/shared/icons/ArrowIcon';
 
 import { CreateRestaurantScreenProps } from '@/components/features/navigation/Navigation';
 import { useManageRestaurant } from '@/hooks/restaurants/useManageRestaurant';
