@@ -14,6 +14,9 @@ export interface Restaurant {
     lat: number;
     long: number;
   };
+  owner: {
+    name: string;
+  };
 }
 
 export interface RestaurantCreate {

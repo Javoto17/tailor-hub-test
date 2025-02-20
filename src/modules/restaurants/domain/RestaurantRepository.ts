@@ -16,4 +16,6 @@ export interface RestaurantRepository {
     nextCursor: number | null;
   }>;
   getRestaurants: (params: GetRestaurantsParams) => Promise<Array<Restaurant>>;
+  updateRestaurant: (id: string, restaurant: FormData) => Promise<Restaurant>;
+  deleteRestaurant: (id: string) => Promise<Restaurant>;
 }

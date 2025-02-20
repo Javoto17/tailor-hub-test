@@ -1,22 +1,20 @@
 import React, { useEffect } from 'react';
-import { View, Text } from 'react-native';
+import { Text, View } from 'react-native';
 import Animated, {
-  useSharedValue,
   useAnimatedStyle,
-  withTiming,
+  useSharedValue,
   withDelay,
+  withTiming,
 } from 'react-native-reanimated';
 
 import { HomeScreenProps } from '@/components/features/navigation/Navigation';
-
+import Button from '@/components/features/shared/Button';
 import Layout from '@/components/features/shared/Layout';
 import TailorIcon from '@/components/features/shared/TailorIcon';
-
-import Button from '@/components/features/shared/Button';
 import { useAuth } from '@/hooks/auth/useAuth';
 
 const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
-  const { verifyUserToken } = useAuth();
+  const { verifyUser } = useAuth();
 
   const opacity = useSharedValue(0);
   const translateY = useSharedValue(50);
@@ -38,15 +36,16 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
   };
 
   useEffect(() => {
-    verifyUserToken();
+    verifyUser.mutate();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
-    opacity.value = withDelay(1250, withTiming(1, { duration: 350 }));
-    translateY.value = withDelay(1000, withTiming(-36, { duration: 500 }));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    if (verifyUser?.isError) {
+      opacity.value = withDelay(1250, withTiming(1, { duration: 350 }));
+      translateY.value = withDelay(1000, withTiming(-36, { duration: 500 }));
+    }
+  }, [opacity, translateY, verifyUser?.isError]);
 
   return (
     <Layout withHeader={false}>

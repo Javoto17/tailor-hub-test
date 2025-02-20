@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { TouchableOpacity, View } from 'react-native';
 
 import RestaurantForm, {
@@ -9,27 +9,51 @@ import LogoIcon from '@/components/features/shared/LogoIcon';
 import ArrowIcon from '@/components/features/shared/ArrowIcon';
 
 import { CreateRestaurantScreenProps } from '@/components/features/navigation/Navigation';
-import { useCreateRestaurant } from '@/hooks/restaurants/useCreateRestaurant';
+import { useManageRestaurant } from '@/hooks/restaurants/useManageRestaurant';
 
 const CreateRestaurantScreen: React.FC<CreateRestaurantScreenProps> = ({
   navigation,
+  route,
 }) => {
-  const { createRestaurantUser } = useCreateRestaurant();
+  const editRestaurant = route.params?.restaurant;
+
+  const {
+    create: { mutate: createRestaurant, isSuccess: isSuccessCreate },
+    update: { mutate: updateRestaurant, isSuccess: isSuccessUpdate },
+  } = useManageRestaurant();
 
   const handlePress = () => {
     navigation.goBack();
   };
 
-  const handleSubmit = (data: RestaurantFormSubmitData) => {
+  const handleSubmit = async (data: RestaurantFormSubmitData) => {
     if (!data.location) {
       return;
     }
 
-    return createRestaurantUser({
+    if (editRestaurant) {
+      const updatedRestaurant = {
+        ...data,
+        location: data.location,
+      };
+
+      updateRestaurant({
+        id: editRestaurant._id,
+        formData: updatedRestaurant,
+      });
+    }
+
+    createRestaurant({
       ...data,
       location: data.location,
     });
   };
+
+  useEffect(() => {
+    if (isSuccessUpdate || isSuccessCreate) {
+      navigation.goBack();
+    }
+  }, [isSuccessUpdate, isSuccessCreate, navigation]);
 
   return (
     <Layout>
@@ -43,7 +67,7 @@ const CreateRestaurantScreen: React.FC<CreateRestaurantScreenProps> = ({
           <LogoIcon className="text-primary" />
         </View>
       </View>
-      <RestaurantForm onSubmit={handleSubmit} />
+      <RestaurantForm onSubmit={handleSubmit} initialValues={editRestaurant} />
     </Layout>
   );
 };

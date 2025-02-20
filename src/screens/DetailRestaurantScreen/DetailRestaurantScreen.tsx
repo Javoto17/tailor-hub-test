@@ -1,6 +1,6 @@
 import { vars } from 'nativewind';
-import React from 'react';
-import { FlatList, View } from 'react-native';
+import React, { useEffect } from 'react';
+import { Alert, FlatList, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { RestaurantDetailScreenProps } from '@/components/features/navigation/Navigation';
@@ -11,13 +11,17 @@ import RestaurantFormComment, {
 import RestaurantHeader from '@/components/features/restaurantDetail/RestaurantHeader';
 import RestaurantIntro from '@/components/features/restaurantDetail/RestaurantIntro';
 import ArrowIcon from '@/components/features/shared/ArrowIcon';
+import Button from '@/components/features/shared/Button';
 import ButtonIcon from '@/components/features/shared/ButtonIcon';
+import EditIcon from '@/components/features/shared/EditIcon';
 import HearthIcon from '@/components/features/shared/HearthIcon';
 import Layout from '@/components/features/shared/Layout';
 import Spinner from '@/components/features/shared/Spinner';
+
 import { useAuth } from '@/hooks/auth/useAuth';
 import { useComment } from '@/hooks/comments/useComment';
 import { useGetRestaurantDetail } from '@/hooks/restaurants/useGetRestaurantDetail';
+import { useManageRestaurant } from '@/hooks/restaurants/useManageRestaurant';
 import { useFavoritesRestaurant } from '@/hooks/user/useFavoritesRestaurant';
 import { Restaurant } from '@/modules/restaurants/domain/Restaurant';
 
@@ -33,7 +37,15 @@ const DetailRestaurantScreen = ({
     data: restaurant,
     isLoading,
     isFavorite,
+    iAmOwner,
   } = useGetRestaurantDetail(id);
+  const {
+    delete: {
+      mutate: deleteRestaurant,
+      isSuccess: isSuccessDelete,
+      isPending: isPendingDelete,
+    },
+  } = useManageRestaurant();
   const { addFavoriteRestaurant, removeFavoriteRestaurant } =
     useFavoritesRestaurant();
   const { createComment, deleteComment } = useComment();
@@ -52,6 +64,12 @@ const DetailRestaurantScreen = ({
 
   const { name, address } = restaurant ?? {};
 
+  useEffect(() => {
+    if (isSuccessDelete) {
+      navigation.goBack();
+    }
+  }, [isSuccessDelete, navigation]);
+
   const toggleFavorite = (item: Restaurant) => {
     if (isFavorite) {
       removeFavoriteRestaurant(item?._id);
@@ -68,15 +86,45 @@ const DetailRestaurantScreen = ({
   );
 
   const thisHeaderRight = () => (
-    <ButtonIcon onPress={() => toggleFavorite(restaurant as Restaurant)}>
-      <HearthIcon
-        className="text-white"
-        width={24}
-        height={24}
-        filled={isFavorite}
-      />
-    </ButtonIcon>
+    <View className="flex-row gap-x-2">
+      {iAmOwner && (
+        <View>
+          <ButtonIcon
+            onPress={() =>
+              navigation.navigate('RestaurantCreate', { restaurant })
+            }
+          >
+            <EditIcon className="text-white" width={24} height={24} />
+          </ButtonIcon>
+        </View>
+      )}
+      <ButtonIcon onPress={() => toggleFavorite(restaurant as Restaurant)}>
+        <HearthIcon
+          className="text-white"
+          width={24}
+          height={24}
+          filled={isFavorite}
+        />
+      </ButtonIcon>
+    </View>
   );
+
+  const handleDeleteRestaurant = () => {
+    Alert.alert(
+      'Delete Restaurant',
+      'Are you sure you want to delete this restaurant?',
+      [
+        { text: 'Cancel', style: 'cancel' },
+        {
+          text: 'Delete',
+          style: 'destructive',
+          onPress: () => {
+            deleteRestaurant(id);
+          },
+        },
+      ]
+    );
+  };
 
   return (
     <Layout withHeader>
@@ -95,6 +143,7 @@ const DetailRestaurantScreen = ({
               headerRight: thisHeaderRight,
             }}
           />
+
           <FlatList
             data={restaurant?.reviews}
             renderItem={({ item }) => (
@@ -119,7 +168,19 @@ const DetailRestaurantScreen = ({
                   address={address}
                   bio={restaurant?.description}
                 />
-                <RestaurantFormComment onSubmit={thisOnSubmit} />
+                {iAmOwner && (
+                  <Button
+                    label={!isPendingDelete ? 'Borrar restaurante' : undefined}
+                    onPress={handleDeleteRestaurant}
+                    variant="filled"
+                    color="secondary"
+                  >
+                    {isPendingDelete ? (
+                      <Spinner className="text-white" size="small" />
+                    ) : null}
+                  </Button>
+                )}
+                {!iAmOwner && <RestaurantFormComment onSubmit={thisOnSubmit} />}
               </>
             }
             className="px-2 flex-1 relative mt-[--header-height]"

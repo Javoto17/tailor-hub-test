@@ -1,155 +1,93 @@
 import { StorageRepository } from '@/modules/storage/domain/StorageRepository';
 import { ClientRepository } from '../domain/ClientRepository';
 
-const setCustomHeaders = (
-  customHeaders: Record<string, string>,
-  authPassword?: string
-) => {
-  const header = new Headers();
+type HttpMethod = 'GET' | 'POST' | 'PUT' | 'DELETE';
+type ApiResponse<T> = { data: T; headers: Headers };
 
-  header.set('content-type', 'application/json');
+const createMakeRequest = (storageRepository: StorageRepository) => {
+  const createHeaders = (
+    customHeaders: Record<string, string>,
+    token?: string
+  ) => {
+    const headers = new Headers();
 
-  if (authPassword) {
-    header.set('authorization', authPassword);
-  }
+    headers.set('Content-type', 'application/json');
+    headers.set('Accept', 'application/json');
 
-  for (const key in customHeaders) {
-    header.set(key, customHeaders[key]);
-  }
+    if (token) headers.set('Authorization', token);
 
-  return header;
+    if (customHeaders) {
+      Object.entries(customHeaders).forEach(([key, value]) =>
+        headers.set(key, value)
+      );
+    }
+
+    return headers;
+  };
+
+  const isJsonResponse = (response: Response): boolean => {
+    const contentType = response.headers.get('Content-Type');
+    return Boolean(contentType?.includes('application/json'));
+  };
+
+  const handleError = async (response: Response): Promise<never> => {
+    const error = await response.json();
+    throw new Error(
+      `Error fetching data: ${response.status} -> ${error.message || response.statusText}`
+    );
+  };
+
+  const parseResponse = async (response: Response) => {
+    return isJsonResponse(response) ? response.json() : response.text();
+  };
+
+  const createRequestBody = (data: unknown): string | FormData | undefined => {
+    if (!data) return undefined;
+    return data instanceof FormData ? data : JSON.stringify(data);
+  };
+
+  return async <T>(
+    method: HttpMethod,
+    url: string,
+    options: RequestInit = {},
+    data?: unknown
+  ): Promise<ApiResponse<T>> => {
+    const token = await storageRepository.get('token');
+
+    const headers = createHeaders(
+      options?.headers as Record<string, string>,
+      token
+    );
+
+    const fetchOptions: RequestInit = {
+      ...options,
+      method,
+      headers,
+      body: createRequestBody(data),
+    };
+
+    const response = await fetch(url, fetchOptions);
+
+    if (!response.ok) return handleError(response);
+
+    const parsedData = await parseResponse(response);
+    return { data: parsedData as T, headers: response.headers };
+  };
 };
 
 export const generateClientRepository = (
   storageRepository: StorageRepository
 ): ClientRepository => {
+  const makeRequest = createMakeRequest(storageRepository);
+
   return {
-    get: async function get<T>(
-      url: string,
-      options: RequestInit = {}
-    ): Promise<{ data: T; headers: Headers }> {
-      const token = await storageRepository.get('token');
-
-      const headers = setCustomHeaders(
-        options?.headers as Record<string, string>,
-        token
-      );
-
-      const fetchOptions: RequestInit = {
-        ...options,
-        method: 'GET',
-        headers,
-      };
-
-      const response = await fetch(url, fetchOptions);
-
-      if (!response.ok) {
-        throw new Error(
-          `Error fetching data: ${response?.status} -> ${response.statusText}`
-        );
-      }
-
-      return { data: (await response.json()) as T, headers: response.headers };
-    },
-    post: async function post<T>(
-      url: string,
-      data: unknown,
-      options: RequestInit = {}
-    ): Promise<{ data: T; headers: Headers }> {
-      const token = await storageRepository.get('token');
-
-      const headers = setCustomHeaders(
-        options?.headers as Record<string, string>,
-        token
-      );
-
-      const fetchOptions: RequestInit = {
-        ...options,
-        method: 'POST',
-        headers,
-        body: data instanceof FormData ? data : JSON.stringify(data),
-      };
-
-      const response = await fetch(url, fetchOptions);
-
-      if (!response.ok) {
-        const parsedData = await response.json();
-        throw new Error(
-          `Error fetching data: ${response?.status} -> ${parsedData.message}`
-        );
-      }
-
-      if (response?.status === 200) {
-        return {
-          data: (await response.text()) as T,
-          headers: response.headers,
-        };
-      }
-
-      return { data: (await response.json()) as T, headers: response.headers };
-    },
-    put: async function put<T>(
-      url: string,
-      data: unknown,
-      options: RequestInit = {}
-    ): Promise<{ data: T; headers: Headers }> {
-      const token = await storageRepository.get('token');
-
-      const headers = setCustomHeaders(
-        options?.headers as Record<string, string>,
-        token
-      );
-
-      const fetchOptions: RequestInit = {
-        ...options,
-        method: 'PUT',
-        headers,
-        body: JSON.stringify(data),
-      };
-
-      const response = await fetch(url, fetchOptions);
-
-      if (!response.ok) {
-        throw new Error(
-          `Error fetching data: ${response?.status} -> ${response.statusText}`
-        );
-      }
-
-      return { data: (await response.json()) as T, headers: response.headers };
-    },
-    remove: async function remove<T>(
-      url: string,
-      options: RequestInit = {}
-    ): Promise<{ headers: Headers; data: T }> {
-      const token = await storageRepository.get('token');
-
-      const headers = setCustomHeaders(
-        options?.headers as Record<string, string>,
-        token
-      );
-
-      const fetchOptions: RequestInit = {
-        ...options,
-        method: 'DELETE',
-        headers,
-      };
-
-      const response = await fetch(url, fetchOptions);
-
-      if (!response.ok) {
-        throw new Error(
-          `Error fetching data: ${response?.status} -> ${response.statusText}`
-        );
-      }
-
-      if (response?.status === 200) {
-        return {
-          headers: response.headers,
-          data: (await response.json()) as T,
-        };
-      }
-
-      return { headers: response.headers, data: (await response.text()) as T };
-    },
+    get: <T>(url: string, options: RequestInit = {}) =>
+      makeRequest<T>('GET', url, options),
+    post: <T>(url: string, data: unknown, options: RequestInit = {}) =>
+      makeRequest<T>('POST', url, options, data),
+    put: <T>(url: string, data: unknown, options: RequestInit = {}) =>
+      makeRequest<T>('PUT', url, options, data),
+    remove: <T>(url: string, options: RequestInit = {}) =>
+      makeRequest<T>('DELETE', url, options),
   };
 };

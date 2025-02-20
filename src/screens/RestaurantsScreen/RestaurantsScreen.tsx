@@ -1,16 +1,17 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { TouchableOpacity, View } from 'react-native';
+
 import { RestaurantsScreenProps } from '@/components/features/navigation/Navigation';
 import RestaurantsList, {
   RestaurantsListRef,
 } from '@/components/features/restaurants/RestaurantsList';
 import RestaurantsMap from '@/components/features/restaurants/RestaurantsMap';
+import FloatIcon from '@/components/features/shared/FloatIcon';
 import Layout from '@/components/features/shared/Layout';
 import ListIcon from '@/components/features/shared/ListIcon';
 import MapIcon from '@/components/features/shared/MapIcon';
-import { useGetRestaurantsPagination } from '@/hooks/restaurants/useGetRestaurantsPagination';
-import FloatIcon from '@/components/features/shared/FloatIcon';
 import PlusIcon from '@/components/features/shared/PlusIcon';
+import { useGetRestaurants } from '@/hooks/restaurants/useGetRestaurants';
 
 enum RestaurantsScreenType {
   LIST = 'LIST',
@@ -20,16 +21,10 @@ enum RestaurantsScreenType {
 const RestaurantsScreen: React.FC<RestaurantsScreenProps> = ({
   navigation,
 }) => {
-  const {
-    data,
-    isFetching: isLoading,
-    hasNextPage,
-    fetchNextPage,
-    isLoadingError,
-  } = useGetRestaurantsPagination();
+  const { data, isLoading, isError } = useGetRestaurants();
 
   const [screenType, setScreenType] = useState<RestaurantsScreenType>(
-    RestaurantsScreenType.MAP
+    RestaurantsScreenType.LIST
   );
 
   useEffect(() => {
@@ -88,14 +83,8 @@ const RestaurantsScreen: React.FC<RestaurantsScreenProps> = ({
     navigation.navigate('RestaurantDetail', { id });
   };
 
-  const onEndReached = useCallback(() => {
-    if (hasNextPage) {
-      fetchNextPage();
-    }
-  }, [hasNextPage, fetchNextPage]);
-
   const getEmptyText = useCallback(() => {
-    if (isLoadingError) {
+    if (isError) {
       return 'Error al cargar los restaurantes';
     }
 
@@ -104,10 +93,12 @@ const RestaurantsScreen: React.FC<RestaurantsScreenProps> = ({
     }
 
     return undefined;
-  }, [isLoadingError, data?.length, isLoading]);
+  }, [isError, data?.length, isLoading]);
 
   const handlePress = () => {
-    navigation.navigate('RestaurantCreate');
+    navigation.navigate('RestaurantCreate', {
+      restaurant: undefined,
+    });
   };
 
   return (
@@ -119,7 +110,6 @@ const RestaurantsScreen: React.FC<RestaurantsScreenProps> = ({
             ref={refList}
             isLoading={isLoading}
             onPressItem={onPressItem}
-            onEndReached={data && data?.length > 0 ? onEndReached : undefined}
             emptyText={getEmptyText()}
           />
           <FloatIcon position="bottomRight" onPress={handlePress}>

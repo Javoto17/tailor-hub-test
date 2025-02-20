@@ -29,6 +29,7 @@ export const generateRestaurantsRepository = (
             `restaurant/list?page=${params?.page}&limit=${params?.limit}`
         );
 
+        console.log(data);
         return data.restaurantList;
       } catch (error) {
         console.log(error);
@@ -87,6 +88,31 @@ export const generateRestaurantsRepository = (
         console.log(error);
         throw error;
       }
+    },
+    updateRestaurant: async (id: string, restaurant: FormData) => {
+      try {
+        const { data } = await clientRepository.put<Restaurant>(
+          API_URL + `restaurant/${id}`,
+          restaurant,
+          {
+            headers: {
+              'Content-Type': 'multipart/form-data',
+            },
+          }
+        );
+
+        return data;
+      } catch (error) {
+        console.log(error);
+        throw error;
+      }
+    },
+    deleteRestaurant: async (id: string) => {
+      const { data } = await clientRepository.remove<Restaurant>(
+        API_URL + `restaurant/${id}`
+      );
+
+      return data;
     },
   };
 };

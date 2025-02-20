@@ -6,7 +6,8 @@ import Ionicons from '@react-native-vector-icons/ionicons';
 
 const buttonVariants = tv({
   slots: {
-    button: 'py-4 px-8 flex flex-row items-center justify-center text-primary',
+    button:
+      'py-4 px-8 flex flex-row items-center justify-center text-primary min-h-14',
     label: 'font-semibold leading-semibold text-body-small',
   },
   variants: {
@@ -44,7 +45,7 @@ const buttonVariants = tv({
       variant: 'filled',
       color: 'primary',
       class: {
-        button: 'bg-light ',
+        button: 'bg-light',
         label: 'text-black',
       },
     },
@@ -52,7 +53,7 @@ const buttonVariants = tv({
       variant: 'filled',
       color: 'secondary',
       class: {
-        button: 'bg-black',
+        button: 'bg-primary',
         label: 'text-light',
       },
     },

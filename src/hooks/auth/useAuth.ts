@@ -8,6 +8,7 @@ import useAuthStore from '@/stores/auth/authStore';
 import { useMutation } from '@tanstack/react-query';
 
 import { generateStorageRepository } from '@/modules/storage/infrastructure/StorageRepository';
+import { refreshToken } from '@/modules/auth/application/refreshToken';
 
 const storageRepository = generateStorageRepository();
 const clientRepository = generateClientRepository(storageRepository);
@@ -36,18 +37,23 @@ export function useAuth() {
     user,
   } = useAuthStore();
 
+  const refreshTokenMutation = useMutation({
+    mutationFn: () => refreshToken(authRepository)(),
+  });
+
   const verifyTokenMutation = useMutation({
     mutationFn: () => verifyToken(authRepository)(),
     onSuccess: (data) => {
       verifyTokenAction(data);
+      refreshTokenMutation.mutateAsync();
     },
   });
 
   const signUpMutation = useMutation({
     mutationFn: ({ name, email, password }: signUpParams) =>
       signUp(authRepository)(name, email, password),
-    onSuccess: () => {
-      verifyTokenMutation.mutateAsync();
+    onSuccess: (_, { email, password }) => {
+      loginMutation.mutateAsync({ email, password });
     },
   });
 
@@ -66,35 +72,28 @@ export function useAuth() {
     },
   });
 
-  const signUpUser = (name: string, email: string, password: string) => {
-    signUpMutation.mutateAsync({
-      name,
-      email,
-      password,
-    });
-  };
-
-  const loginUser = (email: string, password: string) => {
-    loginMutation.mutateAsync({
-      email,
-      password,
-    });
-  };
-
-  const verifyUserToken = () => {
-    verifyTokenMutation.mutateAsync();
-  };
-
-  const logoutUser = () => {
-    logoutMutation.mutateAsync();
-  };
-
   return {
     user,
-    signUpUser,
-    loginUser,
-    logoutUser,
-    verifyUserToken,
+    signUpUser: {
+      mutate: signUpMutation.mutateAsync,
+      isLoading: signUpMutation.isPending,
+      isError: signUpMutation.isError,
+    },
+    loginUser: {
+      mutate: loginMutation.mutateAsync,
+      isLoading: loginMutation.isPending,
+      isError: loginMutation.isError,
+    },
+    logoutUser: {
+      mutate: logoutMutation.mutateAsync,
+      isLoading: logoutMutation.isPending,
+      isError: logoutMutation.isError,
+    },
+    verifyUser: {
+      mutate: verifyTokenMutation.mutateAsync,
+      isLoading: verifyTokenMutation.isPending,
+      isError: verifyTokenMutation.isError,
+    },
     isAuthenticated,
   };
 }

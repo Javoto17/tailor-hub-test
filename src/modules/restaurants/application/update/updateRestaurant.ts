@@ -1,6 +1,6 @@
 import { RestaurantRepository } from '@/modules/restaurants/domain/RestaurantRepository';
 
-export interface CreateRestaurantParams {
+export interface UpdateRestaurantParams {
   name: string;
   address: string;
   description: string;
@@ -11,10 +11,10 @@ export interface CreateRestaurantParams {
   };
 }
 
-export const createRestaurant =
+export const updateRestaurant =
   (restaurantsRepository: RestaurantRepository) =>
-  async (restaurant: CreateRestaurantParams) => {
-    const { name, address, description, image, location } = restaurant;
+  async (id: string, data: UpdateRestaurantParams) => {
+    const { name, address, description, image, location } = data;
 
     const formData = new FormData();
 
@@ -22,14 +22,9 @@ export const createRestaurant =
     formData.append('name', name);
     formData.append('address', address);
     formData.append('description', description);
-    formData.append('image', {
-      name: `${name}.jpg`,
-      type: 'image/jpeg',
-      uri: image,
-    });
-
     formData.append('latlng[lat]', location.latitude.toString());
     formData.append('latlng[lng]', location.longitude.toString());
+    formData.append('image', image);
 
-    await restaurantsRepository.createRestaurant(formData);
+    return await restaurantsRepository.updateRestaurant(id, formData);
   };

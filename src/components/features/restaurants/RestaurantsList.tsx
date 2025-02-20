@@ -48,7 +48,12 @@ const RestaurantsList = forwardRef<RestaurantsListRef, RestaurantsListProps>(
       if (!isLoading) {
         return null;
       }
-      return <Spinner className="text-primary" />;
+
+      return (
+        <View className="flex justify-center items-center ">
+          <Spinner className="text-primary" />
+        </View>
+      );
     };
 
     return (
@@ -64,8 +69,8 @@ const RestaurantsList = forwardRef<RestaurantsListRef, RestaurantsListProps>(
         }}
         ListEmptyComponent={
           !!emptyText ? (
-            <View className="flex justify-center items-center">
-              <Text className="font-roober-semi text-body text-black">
+            <View className="flex justify-center items-center flex-1">
+              <Text className="font-roober-semi text-body text-lightGray">
                 {emptyText}
               </Text>
             </View>
@@ -94,7 +99,9 @@ const RestaurantsList = forwardRef<RestaurantsListRef, RestaurantsListProps>(
             }
           },
         })}
-        ListFooterComponent={renderFooter}
+        {...(!emptyText && {
+          ListFooterComponent: renderFooter,
+        })}
         {...(typeof onEndReached === 'function' && {
           onEndReachedThreshold: 0.35,
           onEndReached: () => {

@@ -8,7 +8,7 @@ import TextField from '../shared/TextField';
 
 export interface FormLoginProps {
   onPressLink: () => void;
-  onSubmit: (data: FormLoginData) => void;
+  onSubmit: (data: FormLoginData) => Promise<void>;
 }
 
 export type FormLoginData = {
@@ -26,8 +26,8 @@ const FormLogin = ({ onPressLink, onSubmit }: FormLoginProps) => {
 
   const { errors, isSubmitting } = formState;
 
-  const thisOnSubmit = (data: FormLoginData) => {
-    onSubmit(data);
+  const thisOnSubmit = async (data: FormLoginData) => {
+    await onSubmit(data);
   };
 
   return (

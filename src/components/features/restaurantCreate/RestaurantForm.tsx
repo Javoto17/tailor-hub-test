@@ -11,6 +11,8 @@ import {
 } from 'react-native';
 import { launchImageLibrary } from 'react-native-image-picker';
 
+import { Restaurant } from '@/modules/restaurants/domain/Restaurant';
+
 import Button from '../shared/Button';
 import PlusIcon from '../shared/PlusIcon';
 import Spinner from '../shared/Spinner';
@@ -36,23 +38,32 @@ export interface RestaurantFormSubmitData extends RestaurantFormData {
 }
 
 interface RestaurantFormProps {
-  onSubmit: (data: RestaurantFormSubmitData) => void;
+  onSubmit: (data: RestaurantFormSubmitData) => Promise<void>;
+  initialValues?: Restaurant;
 }
 
-const RestaurantForm = ({ onSubmit }: RestaurantFormProps) => {
+function getInitialValues(initialValues?: Restaurant) {
+  return {
+    address: initialValues?.address ?? '',
+    description: initialValues?.description ?? '',
+    image: initialValues?.image ?? '',
+    name: initialValues?.name ?? '',
+    location: {
+      latitude: initialValues?.latlng?.lat ?? 0,
+      longitude: initialValues?.latlng?.long ?? 0,
+    },
+  };
+}
+
+const RestaurantForm = ({ onSubmit, initialValues }: RestaurantFormProps) => {
   const { control, setValue, handleSubmit, formState, getValues, setError } =
     useForm<RestaurantFormData>({
-      mode: 'onBlur',
-      defaultValues: {
-        address: '',
-        description: '',
-        image: '',
-        name: '',
-      },
+      mode: 'onChange',
+      defaultValues: getInitialValues(initialValues),
     });
   const watchImage = useWatch({ control, name: 'image' });
 
-  const { isSubmitting, isValid, errors } = formState;
+  const { isSubmitting, errors } = formState;
 
   const handleImagePicker = async () => {
     const result = await launchImageLibrary({
@@ -83,7 +94,7 @@ const RestaurantForm = ({ onSubmit }: RestaurantFormProps) => {
     setValue('location', undefined);
   };
 
-  const thisOnSubmit = (data: RestaurantFormData) => {
+  const thisOnSubmit = async (data: RestaurantFormData) => {
     if (!data.image) {
       setError('image', { message: 'La imagen es requerida' });
       return;
@@ -94,7 +105,7 @@ const RestaurantForm = ({ onSubmit }: RestaurantFormProps) => {
       return;
     }
 
-    return onSubmit(data as RestaurantFormSubmitData);
+    await onSubmit(data as RestaurantFormSubmitData);
   };
 
   return (
@@ -178,6 +189,7 @@ const RestaurantForm = ({ onSubmit }: RestaurantFormProps) => {
                   setError('address', { message: 'La dirección es requerida' });
                 }
               }}
+              value={getValues('address')}
               error={
                 errors?.address?.message
                   ? { message: errors?.address?.message }
@@ -220,7 +232,6 @@ const RestaurantForm = ({ onSubmit }: RestaurantFormProps) => {
               variant="outline"
               size="full"
               onPress={handleSubmit(thisOnSubmit)}
-              disabled={!isValid || isSubmitting}
             >
               {isSubmitting && <Spinner size="small" className="text-black" />}
             </Button>

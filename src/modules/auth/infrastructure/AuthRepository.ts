@@ -60,33 +60,51 @@ export function generateAuthRepository(
           API_URL + `auth/signup`,
           { name, email, password }
         );
+
         return data;
       } catch (error) {
         console.log(error);
+        throw error;
       }
     },
     refreshToken: async (): Promise<void> => {
-      const { headers } = await clientRepository.get<void>(
-        API_URL + `auth/refresh-token`
-      );
+      try {
+        const { headers } = await clientRepository.get<void>(
+          API_URL + `auth/refresh-token`
+        );
 
-      if (!headers.get('authorization')) {
-        throw new Error('No authorization header found');
+        if (!headers.get('authorization')) {
+          throw new Error('No authorization header found');
+        }
+
+        const refreshToken = await getCookie(headers);
+
+        if (!refreshToken) {
+          throw new Error('No refresh token found');
+        }
+
+        storageRepository.set('token', headers.get('authorization') as string);
+        storageRepository.set('refreshToken', refreshToken);
+      } catch (error) {
+        console.log(error);
+        throw error;
       }
-
-      const refreshToken = await getCookie(headers);
-
-      if (!refreshToken) {
-        throw new Error('No refresh token found');
-      }
-
-      storageRepository.set('token', headers.get('authorization') as string);
-      storageRepository.set('refreshToken', refreshToken);
     },
     verifyToken: async (): Promise<User> => {
       try {
+        const refreshToken = storageRepository.get('refreshToken');
+
+        if (!refreshToken) {
+          throw new Error('No token found');
+        }
+
         const { data } = await clientRepository.get<User>(
-          API_URL + `auth/verify`
+          API_URL + `auth/verify`,
+          {
+            headers: {
+              Cookie: `refreshToken=${refreshToken}`,
+            },
+          }
         );
 
         return data;

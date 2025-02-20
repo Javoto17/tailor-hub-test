@@ -27,12 +27,19 @@ const LoginScreen: React.FC<LoginScreenProps> = () => {
     setForm(form === LoginForm.LOGIN ? LoginForm.SIGNUP : LoginForm.LOGIN);
   };
 
-  const handleSignUp = (data: FormSignUpData) => {
-    signUpUser(data.name, data.email, data.password);
+  const handleSignUp = async (data: FormSignUpData) => {
+    await signUpUser.mutate({
+      name: data.name,
+      email: data.email,
+      password: data.password,
+    });
   };
 
-  const handleLogin = (data: FormLoginData) => {
-    loginUser(data.email, data.password);
+  const handleLogin = async (data: FormLoginData) => {
+    await loginUser.mutate({
+      email: data.email,
+      password: data.password,
+    });
   };
 
   const renderForm = () => {
@@ -40,7 +47,13 @@ const LoginScreen: React.FC<LoginScreenProps> = () => {
       return <FormLogin onPressLink={onPressLink} onSubmit={handleLogin} />;
     }
 
-    return <FormSignUp onPressLink={onPressLink} onSubmit={handleSignUp} />;
+    return (
+      <FormSignUp
+        onPressLink={onPressLink}
+        onSubmit={handleSignUp}
+        isLoading={signUpUser?.isLoading || loginUser?.isLoading}
+      />
+    );
   };
 
   return (

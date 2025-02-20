@@ -36,8 +36,8 @@ export interface TextFieldGoogleProps extends Omit<TextFieldProps, 'onPress'> {
 }
 
 const TextFieldGoogle = React.forwardRef<TextInput, TextFieldGoogleProps>(
-  ({ onPress, query, onCancel, onBlur, ...props }, ref) => {
-    const [inputValue, setInputValue] = useState('');
+  ({ onPress, query, onCancel, onBlur, value, ...props }, ref) => {
+    const [inputValue, setInputValue] = useState(value ?? '');
     const [predictions, setPredictions] = useState<Prediction[]>([]);
 
     const getResults = useCallback(
@@ -131,6 +131,7 @@ const TextFieldGoogle = React.forwardRef<TextInput, TextFieldGoogleProps>(
           onChangeText={handleInputChange}
           value={inputValue}
           onBlur={handleBlur}
+          multiline={true}
           rightIcon={
             inputValue?.length > 0 && (
               <TouchableOpacity onPress={handlePressRightIcon}>
