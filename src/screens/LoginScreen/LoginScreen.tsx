@@ -68,7 +68,7 @@ const LoginScreen: React.FC<LoginScreenProps> = () => {
         <ScrollView
           bounces={false}
           keyboardShouldPersistTaps="handled"
-          contentContainerClassName="flex-1"
+          contentContainerClassName="flex-1 pb-2"
         >
           <View className="flex-1 items-center justify-start">
             <TailorIcon className="mt-2 text-primary " height={35} />
